@@ -1,53 +1,67 @@
-﻿using Dados;
-
-namespace ModoADMIN;
-
-internal class AdminAcess
+﻿namespace ModoADMIN
 {
-    public void Admin()
+    internal class AdminAcess
     {
-        int opcao;
-        do
+        public void Admin()
         {
-            Console.WriteLine("\nEscolha uma opção:");
-            Console.WriteLine("1 - Acessar contas");
-            Console.WriteLine("2 - Ver contas");
-            Console.WriteLine("3 - Sair do programa");
-            Console.WriteLine("4 - Criar conta");
-
-            if (!int.TryParse(Console.ReadLine(), out opcao))
+            int opcao;
+            do
             {
-                opcao = 0;
-            }
+                Console.WriteLine("\nEscolha uma opção:");
+                Console.WriteLine("1 - Acessar contas");
+                Console.WriteLine("2 - Ver contas");
+                Console.WriteLine("3 - Sair do programa");
+                Console.WriteLine("4 - Criar conta");
 
-            switch (opcao)
-            {
-                case 1:
-                    Console.WriteLine("Você escolheu ver as contas criadas!");
-                    Bancodedados banco = new Bancodedados();
-                    banco.InfoConta();
-                    break;
-
-                case 2:
-                    Console.WriteLine("Você escolheu ver as contas existentes!");
-                    break;
-
-                case 3:
-                    Console.WriteLine("Saindo do programa...");
-                    return;
-
-                case 4:
-                    Console.WriteLine("Você escolheu criar uma nova conta!");
-                    Bancodedados conta = new Bancodedados();
-                    conta.Armazenamentoinfo();
-                    break;
-
-
-                default:
+                if (!int.TryParse(Console.ReadLine(), out opcao))
+                {
                     Console.WriteLine("Opção inválida!");
-                    break;
-            }
+                    continue;
+                }
 
-        } while (true);
+                switch (opcao)
+                {
+                    case 1:
+                        Console.WriteLine("Você escolheu ver as contas criadas!");
+                        try
+                        {
+                            BancoService banco = new BancoService();
+                            banco.InfoConta();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erro ao acessar contas: {ex.Message}");
+                        }
+                        break;
+
+                    case 2:
+                        Console.WriteLine("Você escolheu ver as contas existentes!");
+                        Console.WriteLine("Funcionalidade futura para múltiplas contas.");
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Saindo do programa...");
+                        return;
+
+                    case 4:
+                        Console.WriteLine("Você escolheu criar uma nova conta!");
+                        try
+                        {
+                            BancoService banco = new BancoService();
+                            banco.CriarConta();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erro ao criar conta: {ex.Message}");
+                        }
+                        break;
+
+                    default:
+                        Console.WriteLine("Opção inválida!");
+                        break;
+                }
+
+            } while (true);
+        }
     }
 }
