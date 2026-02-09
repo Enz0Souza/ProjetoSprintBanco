@@ -16,12 +16,15 @@
             Console.Write(new string(' ', 30 - progresso));
             Console.Write($"] {porcentagem:P0}");
 
-            Thread.Sleep(100);
+            Thread.Sleep(30);
         }
 
-        Console.Clear();
-        Console.WriteLine("=========================================");
-        Console.WriteLine(@"
+        void ExibirLogo()
+        {
+
+            Console.Clear();
+            Console.WriteLine("===========================================================================");
+            Console.WriteLine(@"
 ██████╗░░█████╗░███╗░░██╗░█████╗░░█████╗░░██╗░░░░░░░██╗██╗██╗░░░░░██╗░░░░░
 ██╔══██╗██╔══██╗████╗░██║██╔══██╗██╔══██╗░██║░░██╗░░██║██║██║░░░░░██║░░░░░
 ██████╦╝███████║██╔██╗██║██║░░╚═╝██║░░██║░╚██╗████╗██╔╝██║██║░░░░░██║░░░░░
@@ -29,11 +32,13 @@
 ██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
 ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
 ");
-        Console.WriteLine("\n Versão:0.5 beta");
-        Console.WriteLine("=========================================");
+            Console.WriteLine("Versão:0.7 beta");
+            Console.WriteLine("===========================================================================");
+            Console.WriteLine("\nBem-vindo ao sistema bancário!");
+        }
+        ExibirLogo();
 
-        Console.WriteLine("Bem-vindo ao sistema bancário!");
-        Console.WriteLine("Digite 1 para entrar na sua conta e 2 para entrar no admin");
+        Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin");
 
         int entrar;
         if (!int.TryParse(Console.ReadLine(), out entrar))
@@ -54,8 +59,8 @@
                 {
                     Console.WriteLine("\nEscolha uma opção:");
                     Console.WriteLine("1 - Acessar conta");
-                    Console.WriteLine("3 - Criar conta");
-                    Console.WriteLine("4 - Sair do programa");
+                    Console.WriteLine("2 - Criar conta");
+                    Console.WriteLine("3 - Sair do programa");
 
                     if (!int.TryParse(Console.ReadLine(), out opcao))
                     {
@@ -72,10 +77,14 @@
                                 BancoService banco = new BancoService();
 
                                 Console.Write("Digite seu CPF: ");
-                                string cpf = Console.ReadLine();
+                                string? cpf = Console.ReadLine();
+                                if (string.IsNullOrWhiteSpace(cpf) || !Validador.CPFValido(cpf))
+                                    throw new Exception("CPF inválido");
 
                                 Console.Write("Digite sua senha: ");
-                                string senha = Console.ReadLine();
+                                string? senha = Console.ReadLine();
+                                if (string.IsNullOrWhiteSpace(senha) || !Validador.SenhaValida(senha))
+                                    throw new Exception("Senha inválida");
 
                                 bool logado = banco.Login(cpf, senha);
 
@@ -89,7 +98,7 @@
                                     int opcaoConta;
                                     do
                                     {
-                                        Console.WriteLine("\n--- MENU DA CONTA ---");
+                                        Console.WriteLine("\n====== MENU DA CONTA ======");
                                         Console.WriteLine("1 - Depositar");
                                         Console.WriteLine("2 - Sacar");
                                         Console.WriteLine("3 - Ver saldo");
@@ -107,13 +116,21 @@
                                             {
                                                 case 1:
                                                     Console.Write("Digite o valor para depósito: ");
-                                                    double valorDeposito = double.Parse(Console.ReadLine());
+                                                    string? inputDeposito = Console.ReadLine();
+                                                    if (string.IsNullOrWhiteSpace(inputDeposito) || !double.TryParse(inputDeposito, out double valorDeposito))
+                                                        throw new Exception("Valor de depósito inválido.");
+                                                    if (valorDeposito <= 0)
+                                                        throw new Exception("Valor inválido.");
                                                     banco.Depositar(valorDeposito);
                                                     break;
 
                                                 case 2:
                                                     Console.Write("Digite o valor para saque: ");
-                                                    double valorSaque = double.Parse(Console.ReadLine());
+                                                    string? inputSaque = Console.ReadLine();
+                                                    if (string.IsNullOrWhiteSpace(inputSaque) || !double.TryParse(inputSaque, out double valorSaque))
+                                                        throw new Exception("Valor de saque inválido.");
+                                                    if (valorSaque <= 0)
+                                                        throw new Exception("Valor inválido.");
                                                     banco.Sacar(valorSaque);
                                                     break;
 
@@ -148,7 +165,7 @@
                             break;
 
 
-                        case 3:
+                        case 2:
                             Console.WriteLine("Você escolheu criar uma nova conta!");
 
                             try
@@ -162,7 +179,7 @@
                             }
                             break;
 
-                        case 4:
+                        case 3:
                             Console.WriteLine("Saindo do programa...");
                             return;
 
@@ -177,7 +194,13 @@
                 Console.WriteLine("Você escolheu acessar a conta de administrador!");
                 Console.WriteLine("Digite a senha de acesso:");
 
-                string senhaAdmin = Console.ReadLine();
+
+                string? senhaAdmin = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(senhaAdmin))
+                {
+                    Console.WriteLine("Senha não pode ser vazia!");
+                    return;
+                }
                 if (senhaAdmin != "123")
                 {
                     Console.WriteLine("Senha incorreta!");
@@ -186,11 +209,36 @@
 
                 Console.WriteLine("Acesso administrativo concedido.");
 
-                
+
+                break;
+
+            case 666:
+                string nomeVideo = "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) - Rick Astley (1080p, h264, youtube).mp4";
+
+                string videoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_filedump", "bancowillarquivosimportantes", nomeVideo);
+
+                try
+                {
+                    if (File.Exists(videoPath))
+                    {
+                        Console.WriteLine("Você encontrou o maior easter egg do mundo╰(*°▽°*)╯");
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(videoPath) { UseShellExecute = true });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Erro: Vídeo não encontrado.");
+                        Console.WriteLine($"Procurado em: {videoPath}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro: {ex.Message}");
+                }
                 break;
 
             default:
                 Console.WriteLine("Opção inválida!");
+
                 break;
         }
     }
