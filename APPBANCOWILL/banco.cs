@@ -31,22 +31,35 @@
     public ContaBancaria CriarConta()
     {
         Console.Write("Nome completo: ");
-        string nome = Console.ReadLine();
+        string? nome = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new Exception("Nome do titular não informado.");
 
         Console.Write("CPF: ");
-        string cpf = Console.ReadLine();
+        string? cpf = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(cpf))
+            throw new Exception("CPF não informado.");
 
         if (!Validador.CPFValido(cpf))
             throw new Exception("CPF inválido");
 
         Console.Write("Senha (8 dígitos): ");
-        string senha = Console.ReadLine();
+        string? senha = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(senha))
+            throw new Exception("Senha não informada.");
 
         if (!Validador.SenhaValida(senha))
             throw new Exception("Senha inválida");
 
         Console.WriteLine("Tipo de conta: 1-Corrente | 2-Poupança | 3-Empresarial");
-        int tipo = int.Parse(Console.ReadLine());
+        string? tipoInput = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(tipoInput))
+            throw new Exception("Tipo de conta não informado.");
+
+        int tipo = int.Parse(tipoInput);
 
         ContaBancaria conta = tipo switch
         {

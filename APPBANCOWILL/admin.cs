@@ -1,4 +1,6 @@
-﻿namespace ModoADMIN
+﻿using System.Diagnostics;
+
+namespace ModoADMIN
 {
     internal class AdminAcess
     {
@@ -18,6 +20,8 @@
                     Console.WriteLine("Opção inválida!");
                     continue;
                 }
+
+               
 
                 switch (opcao)
                 {
@@ -55,6 +59,8 @@
                             Console.WriteLine($"Erro ao criar conta: {ex.Message}");
                         }
                         break;
+
+                   
 
                     default:
                         Console.WriteLine("Opção inválida!");

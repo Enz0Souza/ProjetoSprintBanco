@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Funcionalidades\" />
+    <Compile Remove="Funcionalidades\**" />
+    <EmbeddedResource Remove="Funcionalidades\**" />
+    <None Remove="Funcionalidades\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="_filedump\bancowillarquivosimportantes\Rick Astley - Never Gonna Give You Up %28Official Video%29 %284K Remaster%29 - Rick Astley %281080p, h264, youtube%29.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
