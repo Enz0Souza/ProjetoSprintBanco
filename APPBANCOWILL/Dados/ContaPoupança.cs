@@ -1,7 +1,7 @@
 ﻿public class ContaPoupanca : ContaBancaria
 {
-    public ContaPoupanca(string titular, string cpf)
-        : base(titular, cpf) { }
+    public ContaPoupanca(string titular, string cpf, string senha)
+        : base(titular, cpf, senha) { }
 
     public override void Sacar(double valor)
     {

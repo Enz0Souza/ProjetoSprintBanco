@@ -29,7 +29,7 @@ namespace ModoADMIN
                         try
                         {
                             BancoService banco = new BancoService();
-                            banco.InfoConta();
+                           //banco.InfoConta;
                         }
                         catch (Exception ex)
                         {

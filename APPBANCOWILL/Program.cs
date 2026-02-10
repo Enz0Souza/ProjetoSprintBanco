@@ -2,7 +2,7 @@
 using System;
 public class Program
 {
-    public static void Main(string[] args)
+    public static void Main()
     {
         int total = 50;
         Console.WriteLine("Carregando sistema bancário...\n");
@@ -35,9 +35,10 @@ public class Program
 ");
             Console.WriteLine("Versão:0.7 beta");
             Console.WriteLine("===========================================================================");
-            Console.WriteLine("\nBem-vindo ao sistema bancário!");
         }
         ExibirLogo();
+        Console.WriteLine("\nBem-vindo ao sistema bancário!");
+
 
         Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin");
 
@@ -45,14 +46,12 @@ public class Program
         if (!int.TryParse(Console.ReadLine(), out entrar))
         {
             Console.WriteLine("Opção inválida!");
-            return;
         }
-
         switch (entrar)
         {
             case 1:
                 Console.WriteLine("Você escolheu acessar a conta de cliente!");
-                Thread.Sleep(1000);
+ 
                 int opcao;
                 do
                 {
@@ -83,13 +82,32 @@ public class Program
                                 string? cpf = Console.ReadLine();
                                 if (string.IsNullOrWhiteSpace(cpf) || !Validador.CPFValido(cpf))
                                     throw new Exception("CPF inválido");
+                                if(cpf.Length != 11)
+                                    throw new Exception("CPF deve conter 11 dígitos.");
+                                if (banco.Login(cpf, "qualquercoisa") == null)
+                                    throw new Exception("CPF não encontrado.");
 
                                 Console.Write("\nDigite sua senha: ");
                                 string? senha = Console.ReadLine();
                                 if (string.IsNullOrWhiteSpace(senha) || !Validador.SenhaValida(senha))
                                     throw new Exception("Senha inválida");
+                                    Thread.Sleep(1000);
+                                if (senha.Length < 6)
+                                    throw new Exception("Senha deve conter no mínimo 6 caracteres.");
+                                Thread.Sleep(1000);
 
-                                bool logado = banco.Login(cpf, senha);
+                                if (senha.Length > 8)
+                                    throw new Exception("Senha deve conter no máximo 7 caracteres.");
+                                Thread.Sleep(1000);
+
+                                if (senha != banco.Login(cpf, senha)?.Senha)
+                                    throw new Exception("Senha incorreta.");
+                                Thread.Sleep(1000);
+
+
+
+                                ContaBancaria contaLogada = banco.Login(cpf, senha);
+                                bool logado = contaLogada != null;
 
                                 if (logado)
                                 {
@@ -128,7 +146,8 @@ public class Program
                                                         throw new Exception("Valor de depósito inválido.");
                                                     if (valorDeposito <= 0)
                                                         throw new Exception("Valor inválido.");
-                                                    banco.Depositar(valorDeposito);
+                                                    contaLogada.Depositar(valorDeposito);
+
                                                     break;
 
                                                 case 2:
@@ -140,13 +159,16 @@ public class Program
                                                         throw new Exception("Valor de saque inválido.");
                                                     if (valorSaque <= 0)
                                                         throw new Exception("Valor inválido.");
-                                                    banco.Sacar(valorSaque);
+                                                    contaLogada.Sacar(valorSaque);
                                                     break;
 
                                                 case 3:
                                                     Console.Clear();
                                                     ExibirLogo();
-                                                    Console.WriteLine($"Saldo atual: R$ {banco.VerSaldo()}");
+                                                    if (contaLogada != null)
+                                                        Console.WriteLine($"Saldo atual: R$ {contaLogada.Saldo}");
+                                                    else
+                                                        Console.WriteLine("Erro: Conta não está logada.");
                                                     break;
 
                                                 case 4:

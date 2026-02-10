@@ -2,8 +2,8 @@
 {
     public double LimiteEmprestimo { get; } = 5000;
 
-    public ContaEmpresarial(string titular, string cpf)
-        : base(titular, cpf) { }
+    public ContaEmpresarial(string titular, string cpf, string senha)
+        : base(titular, cpf, senha) { }
 
     public override void Sacar(double valor)
     {
