@@ -13,7 +13,6 @@ namespace ModoADMIN
                 Console.WriteLine("1 - Acessar contas");
                 Console.WriteLine("2 - Ver contas");
                 Console.WriteLine("3 - Sair do programa");
-                Console.WriteLine("4 - Criar conta");
 
                 if (!int.TryParse(Console.ReadLine(), out opcao))
                 {
@@ -46,22 +45,6 @@ namespace ModoADMIN
                     case 3:
                         Console.WriteLine("Saindo do programa...");
                         return;
-
-                    case 4:
-                        Console.WriteLine("Você escolheu criar uma nova conta!");
-                        try
-                        {
-                            BancoService banco = new BancoService();
-                            banco.CriarConta();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Erro ao criar conta: {ex.Message}");
-                        }
-                        break;
-
-                   
-
                     default:
                         Console.WriteLine("Opção inválida!");
                         break;
