@@ -1,4 +1,5 @@
-﻿public abstract class ContaBancaria
+﻿using System;
+public abstract class ContaBancaria
 {
     public int NumeroConta { get; protected set; }
     public string Titular { get; protected set; }
@@ -7,7 +8,7 @@
 
     protected ContaBancaria(string titular, string cpf)
     {
-        NumeroConta = new Random().Next(10000, 99999);
+        NumeroConta = new NotFiniteNumberException().GetHashCode();
         Titular = titular;
         CPF = cpf;
         Saldo = 0;

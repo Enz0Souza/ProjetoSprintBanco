@@ -1,6 +1,7 @@
-﻿public class Program
+﻿using ModoADMIN;
+using System;
+public class Program
 {
-
     public static void Main(string[] args)
     {
         int total = 50;
@@ -52,11 +53,11 @@
             case 1:
                 Console.WriteLine("Você escolheu acessar a conta de cliente!");
                 Thread.Sleep(1000);
-
-
                 int opcao;
                 do
                 {
+                    Console.Clear();
+                    ExibirLogo();
                     Console.WriteLine("\nEscolha uma opção:");
                     Console.WriteLine("1 - Acessar conta");
                     Console.WriteLine("2 - Criar conta");
@@ -72,16 +73,18 @@
                     {
                         case 1:
                             Thread.Sleep(1000);
+                            Console.Clear();
+                            ExibirLogo();
                             try
                             {
                                 BancoService banco = new BancoService();
 
-                                Console.Write("Digite seu CPF: ");
+                                Console.Write($"\nDigite seu CPF: ");
                                 string? cpf = Console.ReadLine();
                                 if (string.IsNullOrWhiteSpace(cpf) || !Validador.CPFValido(cpf))
                                     throw new Exception("CPF inválido");
 
-                                Console.Write("Digite sua senha: ");
+                                Console.Write("\nDigite sua senha: ");
                                 string? senha = Console.ReadLine();
                                 if (string.IsNullOrWhiteSpace(senha) || !Validador.SenhaValida(senha))
                                     throw new Exception("Senha inválida");
@@ -98,6 +101,8 @@
                                     int opcaoConta;
                                     do
                                     {
+                                        Console.Clear();
+                                        ExibirLogo();
                                         Console.WriteLine("\n====== MENU DA CONTA ======");
                                         Console.WriteLine("1 - Depositar");
                                         Console.WriteLine("2 - Sacar");
@@ -115,6 +120,8 @@
                                             switch (opcaoConta)
                                             {
                                                 case 1:
+                                                    Console.Clear();
+                                                    ExibirLogo();
                                                     Console.Write("Digite o valor para depósito: ");
                                                     string? inputDeposito = Console.ReadLine();
                                                     if (string.IsNullOrWhiteSpace(inputDeposito) || !double.TryParse(inputDeposito, out double valorDeposito))
@@ -125,6 +132,8 @@
                                                     break;
 
                                                 case 2:
+                                                    Console.Clear();
+                                                    ExibirLogo();
                                                     Console.Write("Digite o valor para saque: ");
                                                     string? inputSaque = Console.ReadLine();
                                                     if (string.IsNullOrWhiteSpace(inputSaque) || !double.TryParse(inputSaque, out double valorSaque))
@@ -135,20 +144,28 @@
                                                     break;
 
                                                 case 3:
+                                                    Console.Clear();
+                                                    ExibirLogo();
                                                     Console.WriteLine($"Saldo atual: R$ {banco.VerSaldo()}");
                                                     break;
 
                                                 case 4:
+                                                    Console.Clear();
+                                                    ExibirLogo();
                                                     Console.WriteLine("Saindo da conta...");
                                                     break;
 
                                                 default:
+                                                    Console.Clear();
+                                                    ExibirLogo();
                                                     Console.WriteLine("Opção inválida!");
                                                     break;
                                             }
                                         }
                                         catch (Exception ex)
                                         {
+                                            Console.Clear();
+                                            ExibirLogo();
                                             Console.WriteLine($"Erro: {ex.Message}");
                                         }
 
@@ -157,7 +174,10 @@
 
                             }
                             catch (Exception ex)
+
                             {
+                                Console.Clear();
+                                ExibirLogo();
                                 Console.WriteLine($"Erro: {ex.Message}");
                             }
 
@@ -166,6 +186,8 @@
 
 
                         case 2:
+                            Console.Clear();
+                            ExibirLogo();
                             Console.WriteLine("Você escolheu criar uma nova conta!");
 
                             try
@@ -175,15 +197,21 @@
                             }
                             catch (Exception ex)
                             {
+                                Console.Clear();
+                                ExibirLogo();
                                 Console.WriteLine($"Erro: {ex.Message}");
                             }
                             break;
 
                         case 3:
+                            Console.Clear();
+                            ExibirLogo();
                             Console.WriteLine("Saindo do programa...");
                             return;
 
                         default:
+                            Console.Clear();
+                            ExibirLogo();
                             Console.WriteLine("Opção inválida!");
                             break;
                     }
@@ -191,6 +219,8 @@
                 } while (true);
 
             case 2:
+                Console.Clear();
+                ExibirLogo();
                 Console.WriteLine("Você escolheu acessar a conta de administrador!");
                 Console.WriteLine("Digite a senha de acesso:");
 
@@ -206,13 +236,16 @@
                     Console.WriteLine("Senha incorreta!");
                     return;
                 }
-
+                Console.Clear();
+                ExibirLogo();
                 Console.WriteLine("Acesso administrativo concedido.");
-
-
+                AdminAcess adminAcess = new AdminAcess();
+                adminAcess.Admin();
                 break;
 
             case 666:
+                Console.Clear();
+                ExibirLogo();
                 string nomeVideo = "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) - Rick Astley (1080p, h264, youtube).mp4";
 
                 string videoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_filedump", "bancowillarquivosimportantes", nomeVideo);
