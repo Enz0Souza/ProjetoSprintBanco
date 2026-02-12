@@ -8,6 +8,11 @@
 
     private static int contador = 1000;
 
+    public void DefinirSaldoInicial(double saldo)
+    {
+        Saldo = saldo;
+    }
+
     protected ContaBancaria(string titular, string cpf, string senha)
     {
         NumeroConta = contador++;

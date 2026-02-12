@@ -5,7 +5,10 @@
 
     public BancoService()
     {
-        CarregarContas();
+        if (!File.Exists(arquivo))
+            File.Create(arquivo).Close();
+
+        Carregar();
     }
 
     public void CriarConta()
@@ -17,7 +20,7 @@
         string cpf = Console.ReadLine()!;
 
         if (contas.Any(c => c.CPF == cpf))
-            throw new Exception("Já existe uma conta com esse CPF.");
+            throw new Exception("CPF já cadastrado");
 
         Console.Write("Senha: ");
         string senha = Console.ReadLine()!;
@@ -34,57 +37,83 @@
         };
 
         contas.Add(conta);
-        SalvarContas();
+        Salvar();
 
-        Console.WriteLine($"Conta criada com sucesso! Nº {conta.NumeroConta}");
+        Console.WriteLine("Conta criada com sucesso!");
+        Console.ReadKey();
     }
 
     public ContaBancaria Login(string cpf, string senha)
     {
-        ContaBancaria? conta =
-            contas.FirstOrDefault(c => c.CPF == cpf && c.Senha == senha);
-
-        if (conta == null)
-            throw new Exception("CPF ou senha inválidos.");
+        ContaBancaria conta = contas
+            .FirstOrDefault(c => c.CPF == cpf && c.Senha == senha)
+            ?? throw new Exception("CPF ou senha incorretos");
 
         return conta;
     }
 
-
-    private void SalvarContas()
+    public void Salvar()
     {
-        var linhas = contas.Select(c =>
-            $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}"
-        );
-
-        File.WriteAllLines(arquivo, linhas);
+        File.WriteAllLines(arquivo,
+            contas.Select(c =>
+                $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}"
+            ));
     }
 
-    private void CarregarContas()
+    private void Carregar()
     {
         if (!File.Exists(arquivo))
             return;
 
         foreach (var linha in File.ReadAllLines(arquivo))
         {
-            var p = linha.Split(';');
-
-            string nome = p[1];
-            string cpf = p[2];
-            string senha = p[3];
-            double saldo = double.Parse(p[4]);
-            string tipo = p[5];
-
-            ContaBancaria conta = tipo switch
+            try
             {
-                nameof(ContaCorrente) => new ContaCorrente(nome, cpf, senha),
-                nameof(ContaPoupanca) => new ContaPoupanca(nome, cpf, senha),
-                nameof(ContaEmpresarial) => new ContaEmpresarial(nome, cpf, senha),
-                _ => throw new Exception("Tipo inválido")
-            };
+                if (string.IsNullOrWhiteSpace(linha))
+                    continue;
 
-            conta.Depositar(saldo);
-            contas.Add(conta);
+                var p = linha.Split(';');
+                if (p.Length < 6)
+                    continue;
+
+                ContaBancaria conta = p[5] switch
+                {
+                    nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
+                    nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
+                    nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
+                    _ => throw new Exception("Tipo de conta inválido.")
+                };
+
+                if (double.TryParse(p[4], out double saldo))
+                    conta.DefinirSaldoInicial(saldo);
+
+                contas.Add(conta);
+            }
+            catch
+            {
+                continue;
+            }
         }
     }
+    public void ListarContas()
+    {
+        if (contas.Count == 0)
+        {
+            Console.WriteLine("Nenhuma conta cadastrada.");
+            return;
+        }
+
+        foreach (var conta in contas)
+        {
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine($"Conta: {conta.NumeroConta}");
+            Console.WriteLine($"Titular: {conta.Titular}");
+            Console.WriteLine($"CPF: {conta.CPF}");
+            Console.WriteLine($"Saldo: {conta.Saldo:C}");
+            Console.WriteLine($"Tipo: {conta.GetType().Name}");
+        }
+    }
+
 }
+
+
