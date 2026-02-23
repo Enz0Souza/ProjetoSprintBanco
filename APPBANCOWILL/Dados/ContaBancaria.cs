@@ -1,26 +1,40 @@
-﻿using System;
-public abstract class ContaBancaria
+﻿public abstract class ContaBancaria
 {
-    public int NumeroConta { get; protected set; }
-    public string Titular { get; protected set; }
-    public string CPF { get; protected set; }
+    public int NumeroConta { get; }
+    public string Titular { get; }
+    public string CPF { get; }
+    public string Senha { get; }
     public double Saldo { get; protected set; }
 
-    protected ContaBancaria(string titular, string cpf)
+    private static int contador = 1000;
+
+    public void DefinirSaldoInicial(double saldo)
     {
-        NumeroConta = new NotFiniteNumberException().GetHashCode();
+        Saldo = saldo;
+    }
+
+    protected ContaBancaria(string titular, string cpf, string senha)
+    {
+        NumeroConta = contador++;
         Titular = titular;
         CPF = cpf;
+        Senha = senha;
         Saldo = 0;
     }
 
-    public virtual void Depositar(double valor)
+    public void Depositar(double valor)
     {
         if (valor <= 0)
-            throw new Exception("Valor inválido");
+            throw new Exception("Valor inválido.");
 
         Saldo += valor;
     }
 
-    public abstract void Sacar(double valor);
+    public virtual void Sacar(double valor)
+    {
+        if (valor > Saldo)
+            throw new Exception("Saldo insuficiente");
+
+        Saldo -= valor;
+    }
 }

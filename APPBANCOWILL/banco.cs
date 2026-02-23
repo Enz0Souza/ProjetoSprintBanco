@@ -1,107 +1,186 @@
-﻿public class BancoService
+﻿using static System.Net.Mime.MediaTypeNames;
+
+public class BancoService
 {
+    private List<ContaBancaria> contas = new();
+    private const string arquivo = "contas.txt";
 
-    private double saldo = 0;
-    public void Depositar(double valor)
+
+    public BancoService()
     {
-        if (valor <= 0)
-            throw new Exception("Valor inválido.");
+        if (!File.Exists(arquivo))
+            File.Create(arquivo).Close();
 
-        saldo += valor;
-        Console.WriteLine($"Depósito realizado com sucesso! Saldo atual: R$ {saldo}");
+        Carregar();
     }
 
-    public void Sacar(double valor)
+    public void CriarConta()
     {
-        if (valor <= 0)
-            throw new Exception("Valor inválido.");
+        Console.Write("Nome: ");
+        string nome = Console.ReadLine()!;
 
-        if (valor > saldo)
-            throw new Exception("Saldo insuficiente.");
-
-        saldo -= valor;
-        Console.WriteLine($"Saque realizado com sucesso! Saldo atual: R$ {saldo}");
-    }
-
-    public double VerSaldo()
-    {
-        return saldo;
-    }
-
-    public ContaBancaria CriarConta()
-    {
-        Console.Write("Nome completo: ");
-        string? nome = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(nome))
-            throw new Exception("Nome do titular não informado.");
 
         Console.Write("CPF: ");
-        string? cpf = Console.ReadLine();
+        string cpf = Console.ReadLine()!;
 
-        if (string.IsNullOrWhiteSpace(cpf))
-            throw new Exception("CPF não informado.");
+        if (contas.Any(c => c.CPF == cpf))
+            throw new Exception("CPF já cadastrado");
 
-        if (!Validador.CPFValido(cpf))
-            throw new Exception("CPF inválido");
+        Console.Write("Senha: ");
+        string senha = Console.ReadLine()!;
 
-        Console.Write("Senha (8 dígitos): ");
-        string? senha = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(senha))
-            throw new Exception("Senha não informada.");
-
-        if (!Validador.SenhaValida(senha))
-            throw new Exception("Senha inválida");
-
-        Console.WriteLine("Tipo de conta: 1-Corrente | 2-Poupança | 3-Empresarial");
-        string? tipoInput = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(tipoInput))
-            throw new Exception("Tipo de conta não informado.");
-
-        int tipo = int.Parse(tipoInput);
+        Console.WriteLine("1-Corrente | 2-Poupança | 3-Empresarial");
+        int tipo = int.Parse(Console.ReadLine()!);
 
         ContaBancaria conta = tipo switch
         {
-            1 => new ContaCorrente(nome, cpf),
-            2 => new ContaPoupanca(nome, cpf),
-            3 => new ContaEmpresarial(nome, cpf),
+            1 => new ContaCorrente(nome, cpf, senha),
+            2 => new ContaPoupanca(nome, cpf, senha),
+            3 => new ContaEmpresarial(nome, cpf, senha),
             _ => throw new Exception("Tipo inválido")
         };
 
-        File.WriteAllText(
-            "conta.txt",
-            $"{conta.NumeroConta};{conta.Titular};{conta.CPF};{senha}"
-        );
+        contas.Add(conta);
+        Salvar();
 
-        Console.WriteLine($"Conta criada com sucesso! Nº {conta.NumeroConta}");
+        Console.WriteLine("Conta criada com sucesso!");
+        Thread.Sleep(500);
+        Console.Clear();
+    }
+
+    public ContaBancaria Login(string cpf, string senha)
+    {
+        ContaBancaria conta = contas
+            .FirstOrDefault(c => c.CPF == cpf && c.Senha == senha)
+            ?? throw new Exception("CPF ou senha incorretos");
+
         return conta;
     }
 
-     
-   
-    public void InfoConta()
+    public void Salvar()
     {
-        if (!File.Exists("conta.txt"))
+        File.WriteAllLines(arquivo,
+            contas.Select(c =>
+                $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}"
+            ));
+    }
+
+    private void Carregar()
+    {
+        if (!File.Exists(arquivo))
+            return;
+
+        foreach (var linha in File.ReadAllLines(arquivo))
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(linha))
+                    continue;
+
+                var p = linha.Split(';');
+                if (p.Length < 6)
+                    continue;
+
+                ContaBancaria conta = p[5] switch
+                {
+                    nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
+                    nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
+                    nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
+                    _ => throw new Exception("Tipo de conta inválido.")
+                };
+
+                if (double.TryParse(p[4], out double saldo))
+                    conta.DefinirSaldoInicial(saldo);
+
+                contas.Add(conta);
+            }
+            catch
+            {
+                continue;
+            }
+        }
+    }
+    public void ListarContas()
+    {
+        if (contas.Count == 0)
         {
             Console.WriteLine("Nenhuma conta cadastrada.");
             return;
         }
 
-        Console.WriteLine("Dados da conta criada:");
-        string dados = File.ReadAllText("conta.txt");
-        Console.WriteLine(dados);
+        foreach (var conta in contas)
+        {
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine($"Conta: {conta.NumeroConta}");
+            Console.WriteLine($"Titular: {conta.Titular}");
+            Console.WriteLine($"CPF: {conta.CPF}");
+            Console.WriteLine($"Saldo: {conta.Saldo:C}");
+            Console.WriteLine($"Tipo: {conta.GetType().Name}");
+        }
+
+
     }
-    public bool Login(string cpf, string senha)
+
+    public void SolicitarEmprestimo(ContaBancaria contaLogada)
     {
-        if (!File.Exists("conta.txt"))
-            throw new Exception("Nenhuma conta cadastrada.");
+        if (contaLogada is not ContaEmpresarial contaEmpresarial)
+        {
+            Console.WriteLine("Apenas contas empresariais podem solicitar empréstimo.");
+            Thread.Sleep(1000);
 
-        string dados = File.ReadAllText("conta.txt");
-        string[] partes = dados.Split(';');
+            return;
+        }
+        Console.WriteLine("Bem - Vindo a área de emprestimo");
 
-        return cpf == partes[2] && senha == partes[3];
+        Console.Write("Valor do empréstimo: ");
+        double valor = double.Parse(Console.ReadLine()!);
+
+        Console.WriteLine("Processando solicitação...");
+        contaEmpresarial.SolicitarEmprestimo(valor);
+
+        Salvar();
+
+        Console.WriteLine("Empréstimo solicitado com sucesso!");
+        Console.WriteLine($"Saldo atual: {contaEmpresarial.Saldo:C}");
     }
 
+    public void AplicarRendimento(ContaBancaria contaLogada)
+    {
+        if (contaLogada is not ContaPoupanca contaPoupanca)
+        {
+            Console.WriteLine("Apenas contas poupança recebem rendimento.");
+            Thread.Sleep(1000);
+            return;
+        }
 
+        try
+        {
+            Console.WriteLine("Bem - Vindo a área de Rendimento");
+
+            contaPoupanca.CalcularRendimento();
+            Salvar();
+
+            Console.WriteLine(
+                $"Rendimento aplicado! Novo saldo: {contaPoupanca.Saldo:C}"
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    internal void DeletarConta(int numeroConta)
+    {
+        var conta = contas.FirstOrDefault(c => c.NumeroConta == numeroConta);
+        if (conta != null)
+        {
+            contas.Remove(conta);
+            Salvar();
+        }
+        else
+        {
+            throw new Exception("Conta não encontrada.");
+        }
+    }
 }
