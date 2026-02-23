@@ -7,7 +7,7 @@ using System.Threading;
 
 public class Program
 {
-    static BancoService banco = new BancoService();
+    static BancoService banco = new BancoService();//inicia o serviço 
 
     public static void Main()
     {
@@ -35,7 +35,7 @@ public class Program
             {
                 Console.WriteLine("Opção inválida!");
                 Thread.Sleep(1500);
-                continue; // ← volta pro menu inicial
+                continue;
             }
 
             switch (entrar)
@@ -175,7 +175,12 @@ public class Program
             Console.WriteLine("1 - Depositar");
             Console.WriteLine("2 - Sacar");
             Console.WriteLine("3 - Ver saldo");
-            Console.WriteLine("4 - Sair da conta");
+            Console.WriteLine("4 - Pedir Emprestimo");
+            Console.WriteLine("5- Rendimento");
+            Console.WriteLine("6 - Sair da conta");
+            Console.WriteLine("================================");
+
+
 
             if (!int.TryParse(Console.ReadLine(), out opcaoConta))
                 continue;
@@ -195,6 +200,8 @@ public class Program
                         Console.Write("\nValor para saque: ");
                         double saque = double.Parse(Console.ReadLine()!);
                         conta.Sacar(saque);
+                        Console.WriteLine("\nSaque realizado com sucesso!");
+                        Thread.Sleep(1000);
                         banco.Salvar();
                         break;
 
@@ -204,6 +211,13 @@ public class Program
                         break;
 
                     case 4:
+                        banco.SolicitarEmprestimo(conta);
+                        break;
+
+                    case 5:
+                        banco.AplicarRendimento(conta);
+                        break;
+                    case 6:
                         return;
                 }
             }
@@ -230,8 +244,10 @@ public class Program
             return;
         }
 
-        AdminAcess admin = new AdminAcess();
+        BancoService banco = new BancoService();
+        AdminAcess admin = new AdminAcess(banco);
         admin.Admin();
+
     }
 
     static void ExibirLogo()
@@ -246,7 +262,7 @@ public class Program
 ██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
 ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
 ");
-        Console.WriteLine("Versão: 0.7 beta");
+        Console.WriteLine("Versão: 0.9 pré-alpha");
         Console.WriteLine("===========================================================================");
     }
 }

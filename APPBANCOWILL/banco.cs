@@ -1,7 +1,10 @@
-﻿public class BancoService
+﻿using static System.Net.Mime.MediaTypeNames;
+
+public class BancoService
 {
     private List<ContaBancaria> contas = new();
     private const string arquivo = "contas.txt";
+
 
     public BancoService()
     {
@@ -15,6 +18,7 @@
     {
         Console.Write("Nome: ");
         string nome = Console.ReadLine()!;
+
 
         Console.Write("CPF: ");
         string cpf = Console.ReadLine()!;
@@ -40,7 +44,8 @@
         Salvar();
 
         Console.WriteLine("Conta criada com sucesso!");
-        Console.ReadKey();
+        Thread.Sleep(500);
+        Console.Clear();
     }
 
     public ContaBancaria Login(string cpf, string senha)
@@ -112,8 +117,70 @@
             Console.WriteLine($"Saldo: {conta.Saldo:C}");
             Console.WriteLine($"Tipo: {conta.GetType().Name}");
         }
+
+
     }
 
+    public void SolicitarEmprestimo(ContaBancaria contaLogada)
+    {
+        if (contaLogada is not ContaEmpresarial contaEmpresarial)
+        {
+            Console.WriteLine("Apenas contas empresariais podem solicitar empréstimo.");
+            Thread.Sleep(1000);
+
+            return;
+        }
+        Console.WriteLine("Bem - Vindo a área de emprestimo");
+
+        Console.Write("Valor do empréstimo: ");
+        double valor = double.Parse(Console.ReadLine()!);
+
+        Console.WriteLine("Processando solicitação...");
+        contaEmpresarial.SolicitarEmprestimo(valor);
+
+        Salvar();
+
+        Console.WriteLine("Empréstimo solicitado com sucesso!");
+        Console.WriteLine($"Saldo atual: {contaEmpresarial.Saldo:C}");
+    }
+
+    public void AplicarRendimento(ContaBancaria contaLogada)
+    {
+        if (contaLogada is not ContaPoupanca contaPoupanca)
+        {
+            Console.WriteLine("Apenas contas poupança recebem rendimento.");
+            Thread.Sleep(1000);
+            return;
+        }
+
+        try
+        {
+            Console.WriteLine("Bem - Vindo a área de Rendimento");
+
+            contaPoupanca.CalcularRendimento();
+            Salvar();
+
+            Console.WriteLine(
+                $"Rendimento aplicado! Novo saldo: {contaPoupanca.Saldo:C}"
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    internal void DeletarConta(int numeroConta)
+    {
+        var conta = contas.FirstOrDefault(c => c.NumeroConta == numeroConta);
+        if (conta != null)
+        {
+            contas.Remove(conta);
+            Salvar();
+        }
+        else
+        {
+            throw new Exception("Conta não encontrada.");
+        }
+    }
 }
-
-

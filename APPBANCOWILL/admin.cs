@@ -1,59 +1,78 @@
-﻿    using System.Diagnostics;
-
-    namespace ModoADMIN
+﻿namespace ModoADMIN
+{
+    internal class AdminAcess
     {
-        internal class AdminAcess
+        private readonly BancoService _banco;
+
+        public AdminAcess(BancoService banco)
         {
-            public void Admin()
+            _banco = banco;
+        }
+
+        public void Admin()
+        {
+            int opcao;
+            do
             {
-                int opcao;
-                do
+                Console.WriteLine("\nEscolha uma opção:");
+                Console.WriteLine("1 - Acessar contas");
+                Console.WriteLine("2 - Ver contas");
+                Console.WriteLine("3 - Deletar contas");
+                Console.WriteLine("4 - Sair do programa");
+
+                if (!int.TryParse(Console.ReadLine(), out opcao))
                 {
-                    Console.WriteLine("\nEscolha uma opção:");
-                    Console.WriteLine("1 - Acessar contas");
-                    Console.WriteLine("2 - Ver contas");
-                    Console.WriteLine("3 - Sair do programa");
+                    Console.WriteLine("Opção inválida!");
+                    continue;
+                }
 
-                    if (!int.TryParse(Console.ReadLine(), out opcao))
-                    {
-                        Console.WriteLine("Opção inválida!");
-                        continue;
-                    }
-
-               
-
-                    switch (opcao)
-                    {
+                switch (opcao)
+                {
                     case 1:
+                        Console.WriteLine("Você escolheu acessar as informações da conta");
+                        Console.WriteLine("Funcionalidade ainda será implementada :-D");
+                        break;
+
+                    case 2:
                         Console.WriteLine("Você escolheu ver as contas criadas!");
-                        try
+                        _banco.ListarContas();
+                        Console.WriteLine("Pressione qualquer tecla para continuar");
+                        Console.ReadKey();
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Qual conta será deletada?");
+                        _banco.ListarContas();
+
+                        Console.WriteLine("Digite o número da conta a ser deletada:");
+                        if (int.TryParse(Console.ReadLine(), out int numeroConta))
                         {
-                            BancoService banco = new BancoService();
-                            banco.ListarContas();
-                            Console.ReadKey();
-                            Console.WriteLine("Pressione qualquer tecla para continuar");
+                            try
+                            {
+                                _banco.DeletarConta(numeroConta);
+                                Console.WriteLine("Conta deletada com sucesso!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Erro ao deletar conta: {ex.Message}");
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Console.WriteLine($"Erro ao acessar contas: {ex.Message}");
+                            Console.WriteLine("Número de conta inválido!");
                         }
                         break;
 
+                    case 4:
+                        Console.WriteLine("Saindo do programa...");
+                        return;
 
-                    case 2:
-                            Console.WriteLine("Você escolheu ver as contas existentes!");
-                            Console.WriteLine("Funcionalidade futura para múltiplas contas.");
-                            break;
+                    default:
+                        Console.WriteLine("Opção inválida!");
+                        break;
+                }
 
-                        case 3:
-                            Console.WriteLine("Saindo do programa...");
-                            return;
-                        default:
-                            Console.WriteLine("Opção inválida!");
-                            break;
-                    }
-
-                } while (true);
-            }
+            } while (true);
         }
     }
+}

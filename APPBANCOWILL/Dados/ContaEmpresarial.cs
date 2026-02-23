@@ -12,4 +12,16 @@
 
         Saldo -= valor;
     }
+
+    internal void SolicitarEmprestimo(double valor)
+    {
+        if (valor <= 0)
+            throw new Exception("Valor inválido.");
+
+        if (valor > LimiteEmprestimo)
+            throw new Exception("Valor do empréstimo excede o limite.");
+
+        Saldo += valor;
+    }
+
 }
