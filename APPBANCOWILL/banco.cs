@@ -26,6 +26,12 @@ public class BancoService
         if (contas.Any(c => c.CPF == cpf))
             throw new Exception("CPF já cadastrado");
 
+        if (string.IsNullOrWhiteSpace(cpf))
+            throw new Exception("CPF não pode ser vazio");
+
+        if (cpf.Length != 11 || !cpf.All(char.IsDigit))
+            throw new Exception("CPF deve conter 11 dígitos numéricos");
+
         Console.Write("Senha: ");
         string senha = Console.ReadLine()!;
 
@@ -116,6 +122,8 @@ public class BancoService
             Console.WriteLine($"CPF: {conta.CPF}");
             Console.WriteLine($"Saldo: {conta.Saldo:C}");
             Console.WriteLine($"Tipo: {conta.GetType().Name}");
+            Console.WriteLine("--------------------------------");
+
         }
 
 
@@ -144,6 +152,24 @@ public class BancoService
         Console.WriteLine($"Saldo atual: {contaEmpresarial.Saldo:C}");
     }
 
+    public void PagarEmprestimo(ContaBancaria contaLogada)
+    {
+        if (contaLogada is not ContaEmpresarial contaEmpresarial)
+        {
+            Console.WriteLine("Apenas contas empresariais podem pagar empréstimo.");
+            Thread.Sleep(1000);
+            return;
+        }
+        Console.WriteLine("Bem - Vindo a área de pagamento de emprestimo");
+        Console.Write("Valor do pagamento: ");
+        double valor = double.Parse(Console.ReadLine()!);
+        Console.WriteLine("Processando pagamento...");
+        contaEmpresarial.PagarEmprestimo(valor);
+        Salvar();
+        Console.WriteLine("Pagamento realizado com sucesso!");
+        Console.WriteLine($"Saldo atual: {contaEmpresarial.Saldo:C}");
+    }
+
     public void AplicarRendimento(ContaBancaria contaLogada)
     {
         if (contaLogada is not ContaPoupanca contaPoupanca)
@@ -163,6 +189,8 @@ public class BancoService
             Console.WriteLine(
                 $"Rendimento aplicado! Novo saldo: {contaPoupanca.Saldo:C}"
             );
+
+             
         }
         catch (Exception ex)
         {
