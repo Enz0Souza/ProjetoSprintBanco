@@ -1,9 +1,6 @@
 ﻿using ModoADMIN;
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
+
 
 public class Program
 {
@@ -11,7 +8,7 @@ public class Program
 
     public static void Main()
     {
-        int total = 50;
+        int total = 50;//sistema de animação de carregamento
         Console.WriteLine("Carregando sistema bancário...\n");
 
         for (int i = 0; i <= total; i++)
@@ -27,13 +24,16 @@ public class Program
         }
         while (true)
         {
-            ExibirLogo();
-            Console.WriteLine("\nBem-vindo ao sistema bancário!");
+            ExibirLogo();//exibe o logo do banco
+            string nomeUsuario = Environment.UserName;
+            Console.WriteLine($"\nBem-vindo ao sistema bancário {nomeUsuario}");//saudação que puxa o nome do pc
             Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin");
 
             if (!int.TryParse(Console.ReadLine(), out int entrar))
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Opção inválida!");
+                Console.ResetColor();
                 Thread.Sleep(1500);
                 continue;
             }
@@ -41,14 +41,17 @@ public class Program
             switch (entrar)
             {
                 case 1:
-                    MenuCliente();
+                    MenuCliente();//entra no menu do cliente
                     break;
 
                 case 2:
-                    MenuAdmin();
+                    Console.Clear();
+                    ExibirLogo();
+                    MenuAdmin();//entra no menu do admin
+
                     break;
 
-                case 666:
+                case 666://easter egg
                     string nomeVideo =
                         "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) - Rick Astley (1080p, h264, youtube).mp4";
 
@@ -63,7 +66,9 @@ public class Program
                     {
                         if (File.Exists(videoPath))
                         {
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Você encontrou o maior easter egg do mundo ╰(*°▽°*)╯");
+                            Console.ResetColor();
                             System.Diagnostics.Process.Start(
                                 new System.Diagnostics.ProcessStartInfo(videoPath)
                                 {
@@ -73,28 +78,37 @@ public class Program
                         }
                         else
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Erro: Vídeo não encontrado.");
+                            Console.ResetColor();
                             Console.WriteLine($"Procurado em: {videoPath}");
                         }
                     }
                     catch (Exception ex)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Erro: {ex.Message}");
+                        Console.ResetColor();
                     }
 
                     Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
                     Console.ReadKey();
                     break;
 
+                case 07072007://Meu Instagram
+                    Process.Start(new ProcessStartInfo("https://www.instagram.com/enzoo_souzza/") { UseShellExecute = true });
+                    break;
                 default:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Opção inválida!");
+                    Console.ResetColor();
                     Thread.Sleep(1500);
                     break;
             }
         }
     }
 
-        static void MenuCliente()
+    static void MenuCliente()//Função do menu do cliente
     {
         int opcao;
         do
@@ -121,7 +135,9 @@ public class Program
                     }
                     catch (Exception ex)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Erro: {ex.Message}");
+                        Console.ResetColor();
                         Thread.Sleep(1500);
                     }
                     break;
@@ -133,7 +149,7 @@ public class Program
         } while (true);
     }
 
-    static void LoginConta()
+    static void LoginConta()//Função para logar na conta do cliente
     {
         try
         {
@@ -145,6 +161,7 @@ public class Program
             if (cpf.Length != 11)
                 throw new Exception("CPF inválido.");
 
+
             Console.Write("Digite sua senha: ");
             string senha = Console.ReadLine()!;
             if (senha.Length < 6 || senha.Length > 8)
@@ -152,19 +169,23 @@ public class Program
 
             ContaBancaria contaLogada = banco.Login(cpf, senha);
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nLogin realizado com sucesso!");
+            Console.ResetColor();
             Thread.Sleep(1000);
 
             MenuConta(contaLogada);
         }
         catch (Exception ex)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"\nErro: {ex.Message}");
+            Console.ResetColor();
             Thread.Sleep(1500);
         }
     }
 
-    static void MenuConta(ContaBancaria conta)
+    static void MenuConta(ContaBancaria conta)//Função do menu da conta do cliente
     {
         int opcaoConta;
         do
@@ -176,8 +197,9 @@ public class Program
             Console.WriteLine("2 - Sacar");
             Console.WriteLine("3 - Ver saldo");
             Console.WriteLine("4 - Pedir Emprestimo");
-            Console.WriteLine("5- Rendimento");
-            Console.WriteLine("6 - Sair da conta");
+            Console.WriteLine("5- Pagar Emprestimo");
+            Console.WriteLine("6- Rendimento");
+            Console.WriteLine("7 - Sair da conta");
             Console.WriteLine("================================");
 
 
@@ -187,13 +209,15 @@ public class Program
 
             try
             {
-                switch (opcaoConta)
+                switch (opcaoConta)//switch para as opções da conta 
                 {
                     case 1:
                         Console.Write("\nValor para depósito: ");
                         double dep = double.Parse(Console.ReadLine()!);
                         conta.Depositar(dep);
                         banco.Salvar();
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+                        Console.ReadKey();
                         break;
 
                     case 2:
@@ -201,36 +225,57 @@ public class Program
                         double saque = double.Parse(Console.ReadLine()!);
                         conta.Sacar(saque);
                         Console.WriteLine("\nSaque realizado com sucesso!");
-                        Thread.Sleep(1000);
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+                        Console.ReadKey();
                         banco.Salvar();
                         break;
 
                     case 3:
                         Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo}");
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
 
                     case 4:
                         banco.SolicitarEmprestimo(conta);
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+                        Console.ReadKey();
+
                         break;
 
                     case 5:
-                        banco.AplicarRendimento(conta);
+                        banco.PagarEmprestimo(conta);
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+                        Console.ReadKey();
                         break;
+
+
+
                     case 6:
+                        banco.AplicarRendimento(conta);
+                        Thread.Sleep(1500);
+                        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+                        Console.ReadKey();
+
+
+                        break;
+
+                    case 7:
                         return;
                 }
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"\nErro: {ex.Message}");
+                Console.ResetColor();
                 Thread.Sleep(1500);
             }
 
         } while (true);
     }
 
-    static void MenuAdmin()
+    static void MenuAdmin()//Função do menu do admin
     {
         Console.Clear();
         ExibirLogo();
@@ -239,7 +284,9 @@ public class Program
 
         if (senha != "123")
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Senha incorreta!");
+            Console.ResetColor();
             Thread.Sleep(1500);
             return;
         }
@@ -250,7 +297,7 @@ public class Program
 
     }
 
-    static void ExibirLogo()
+    static void ExibirLogo()//Função para exibir o logo do banco
     {
         Console.Clear();
         Console.WriteLine("===========================================================================");
@@ -262,7 +309,11 @@ public class Program
 ██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
 ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
 ");
-        Console.WriteLine("Versão: 0.9 pré-alpha");
+        Console.WriteLine("Versão: 1.0 beta");
+        Console.WriteLine("Desenvolvido por: Enzo Souza/Eleven");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Esse banco nunca vai falir ^o^");
+        Console.ResetColor();
         Console.WriteLine("===========================================================================");
     }
 }

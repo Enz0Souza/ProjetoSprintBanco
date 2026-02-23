@@ -24,4 +24,17 @@
         Saldo += valor;
     }
 
+    internal void PagarEmprestimo(double valor)
+    {
+        if (valor <= 0)
+            throw new Exception("Valor inválido.");
+        if (valor > Saldo)
+            throw new Exception("Saldo insuficiente para pagar o empréstimo.");
+        Saldo -= valor;
+
+        if (Saldo < 0)
+            Console.WriteLine($"Atenção: Você ainda tem um saldo devedor de {Math.Abs(Saldo):C}.");
+        if (Saldo == 0)
+            Console.WriteLine("Parabéns! Você quitou seu empréstimo.");
+    }   
 }

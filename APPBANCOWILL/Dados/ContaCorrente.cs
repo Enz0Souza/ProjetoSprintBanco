@@ -8,7 +8,9 @@
     public override void Sacar(double valor)
     {
         double total = valor + TAXA;
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Valor do saque: {valor:C}, Taxa: {TAXA:C}, Total debitado: {total:C}");
+        Console.ResetColor();
 
         if (total > Saldo)
             throw new Exception("Saldo insuficiente");

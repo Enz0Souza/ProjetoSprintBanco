@@ -15,10 +15,9 @@
             do
             {
                 Console.WriteLine("\nEscolha uma opção:");
-                Console.WriteLine("1 - Acessar contas");
-                Console.WriteLine("2 - Ver contas");
-                Console.WriteLine("3 - Deletar contas");
-                Console.WriteLine("4 - Sair do programa");
+                Console.WriteLine("1 - Ver contas");
+                Console.WriteLine("2 - Deletar contas");
+                Console.WriteLine("3 - Sair do programa");
 
                 if (!int.TryParse(Console.ReadLine(), out opcao))
                 {
@@ -28,19 +27,15 @@
 
                 switch (opcao)
                 {
-                    case 1:
-                        Console.WriteLine("Você escolheu acessar as informações da conta");
-                        Console.WriteLine("Funcionalidade ainda será implementada :-D");
-                        break;
 
-                    case 2:
+                    case 1:
                         Console.WriteLine("Você escolheu ver as contas criadas!");
                         _banco.ListarContas();
                         Console.WriteLine("Pressione qualquer tecla para continuar");
                         Console.ReadKey();
                         break;
 
-                    case 3:
+                    case 2:
                         Console.WriteLine("Qual conta será deletada?");
                         _banco.ListarContas();
 
@@ -63,7 +58,7 @@
                         }
                         break;
 
-                    case 4:
+                    case 3:
                         Console.WriteLine("Saindo do programa...");
                         return;
 
