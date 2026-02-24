@@ -17,7 +17,7 @@
                 Console.WriteLine("\nEscolha uma opção:");
                 Console.WriteLine("1 - Ver contas");
                 Console.WriteLine("2 - Deletar contas");
-                Console.WriteLine("3 - Sair do programa");
+                Console.WriteLine("3 - Sair do modo admin");
 
                 if (!int.TryParse(Console.ReadLine(), out opcao))
                 {

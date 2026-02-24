@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-public class BancoService
+﻿public class BancoService
 {
     private List<ContaBancaria> contas = new();
     private const string arquivo = "contas.txt";
@@ -67,43 +65,44 @@ public class BancoService
     {
         File.WriteAllLines(arquivo,
             contas.Select(c =>
-                $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}"
-            ));
+            {
+                if (c is ContaEmpresarial ce)
+                {
+                    return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name};{ce.ExportarDados()}";
+                }
+
+                return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}";
+            })
+        );
     }
 
     private void Carregar()
     {
-        if (!File.Exists(arquivo))
-            return;
-
         foreach (var linha in File.ReadAllLines(arquivo))
         {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(linha))
-                    continue;
-
-                var p = linha.Split(';');
-                if (p.Length < 6)
-                    continue;
-
-                ContaBancaria conta = p[5] switch
-                {
-                    nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
-                    nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
-                    nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
-                    _ => throw new Exception("Tipo de conta inválido.")
-                };
-
-                if (double.TryParse(p[4], out double saldo))
-                    conta.DefinirSaldoInicial(saldo);
-
-                contas.Add(conta);
-            }
-            catch
-            {
+            if (string.IsNullOrWhiteSpace(linha))
                 continue;
+
+            var p = linha.Split(';');
+
+            ContaBancaria conta = p[5] switch
+            {
+                nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
+                nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
+                nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
+                _ => throw new Exception("Tipo inválido")
+            };
+
+            conta.DefinirSaldoInicial(double.Parse(p[4]));
+
+            if (conta is ContaEmpresarial ce && p.Length >= 8)
+            {
+                double divida = double.Parse(p[6]);
+                DateTime data = DateTime.Parse(p[7]);
+                ce.ImportarDados(divida, data);
             }
+
+            contas.Add(conta);
         }
     }
     public void ListarContas()
@@ -190,7 +189,7 @@ public class BancoService
                 $"Rendimento aplicado! Novo saldo: {contaPoupanca.Saldo:C}"
             );
 
-             
+
         }
         catch (Exception ex)
         {
@@ -211,4 +210,45 @@ public class BancoService
             throw new Exception("Conta não encontrada.");
         }
     }
+
+    public void VerDivida(ContaBancaria contaLogada)
+    {
+        if (contaLogada is not ContaEmpresarial contaEmpresarial)
+        {
+            Console.WriteLine("Essa conta não possui empréstimo.");
+            Thread.Sleep(1000);
+            return;
+        }
+
+        Console.WriteLine("===== SITUAÇÃO DO EMPRÉSTIMO =====");
+
+        if (contaEmpresarial.DividaEmprestimo <= 0)
+        {
+            Console.WriteLine("Você não possui dívida ");
+            return;
+        }
+
+        Console.WriteLine($"Dívida atual: {contaEmpresarial.DividaEmprestimo:C}");
+        Console.WriteLine($"Último pagamento: {contaEmpresarial.DataUltimoPagamento:dd/MM/yyyy}");
+    }
+
+    public void Pagamento(ContaBancaria conta)
+    {
+        Console.WriteLine("Escolha a forma de pagamanento 1 - tranferencia  2 - pix");
+        if (!int.TryParse(Console.ReadLine(), out int entrar))
+            switch (entrar)
+            {
+                case 1:
+                    Console.WriteLine("sistema em implementação");
+                    Thread.Sleep(1000);
+                    break;
+
+                case 2:
+                    Console.WriteLine("sistema em implementação");
+                    Thread.Sleep(1000);
+                    break;
+
+            }
+    }
+
 }
