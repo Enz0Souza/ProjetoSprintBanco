@@ -1,7 +1,5 @@
 ﻿using ModoADMIN;
 using System.Diagnostics;
-
-
 public class Program
 {
     static BancoService banco = new BancoService();//inicia o serviço 
@@ -27,7 +25,7 @@ public class Program
             ExibirLogo();//exibe o logo do banco
             string nomeUsuario = Environment.UserName;
             Console.WriteLine($"\nBem-vindo ao sistema bancário {nomeUsuario}");//saudação que puxa o nome do pc
-            Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin");
+            Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin ou pressione 3 para sair do app");
 
             if (!int.TryParse(Console.ReadLine(), out int entrar))
             {
@@ -49,7 +47,27 @@ public class Program
                     ExibirLogo();
                     MenuAdmin();//entra no menu do admin
 
+
+
                     break;
+
+                case 3:
+                    Console.WriteLine(@"
+░█████╗░██████╗░██████╗░██╗░██████╗░░█████╗░██████╗░░█████╗░  ██████╗░░█████╗░██████╗░
+██╔══██╗██╔══██╗██╔══██╗██║██╔════╝░██╔══██╗██╔══██╗██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
+██║░░██║██████╦╝██████╔╝██║██║░░██╗░███████║██║░░██║██║░░██║  ██████╔╝██║░░██║██████╔╝
+██║░░██║██╔══██╗██╔══██╗██║██║░░╚██╗██╔══██║██║░░██║██║░░██║  ██╔═══╝░██║░░██║██╔══██╗
+╚█████╔╝██████╦╝██║░░██║██║╚██████╔╝██║░░██║██████╔╝╚█████╔╝  ██║░░░░░╚█████╔╝██║░░██║
+░╚════╝░╚═════╝░╚═╝░░╚═╝╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░╚════╝░  ╚═╝░░░░░░╚════╝░╚═╝░░╚═╝
+
+██╗░░░██╗░██████╗░█████╗░██████╗░  ░█████╗░  ░█████╗░██████╗░██████╗░
+██║░░░██║██╔════╝██╔══██╗██╔══██╗  ██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
+██║░░░██║╚█████╗░███████║██████╔╝  ██║░░██║  ███████║██████╔╝██████╔╝
+██║░░░██║░╚═══██╗██╔══██║██╔══██╗  ██║░░██║  ██╔══██║██╔═══╝░██╔═══╝░
+╚██████╔╝██████╔╝██║░░██║██║░░██║  ╚█████╔╝  ██║░░██║██║░░░░░██║░░░░░
+░╚═════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝  ░╚════╝░  ╚═╝░░╚═╝╚═╝░░░░░╚═╝░░░░░");
+                    Thread.Sleep(1500);
+                    return;
 
                 case 666://easter egg
                     string nomeVideo =
@@ -197,10 +215,12 @@ public class Program
             Console.WriteLine("2 - Sacar");
             Console.WriteLine("3 - Ver saldo");
             Console.WriteLine("4 - Pedir Emprestimo");
-            Console.WriteLine("5- Pagar Emprestimo");
-            Console.WriteLine("6- Rendimento");
-            Console.WriteLine("7 - Sair da conta");
-            Console.WriteLine("================================");
+            Console.WriteLine("5 - Pagar Emprestimo");
+            Console.WriteLine("6 - Rendimento");
+            Console.WriteLine("7 - Ver Divida");
+            Console.WriteLine("8 - Tranferencia");
+            Console.WriteLine("9 - Sair da conta");
+            Console.WriteLine("============================");
 
 
 
@@ -209,7 +229,7 @@ public class Program
 
             try
             {
-                switch (opcaoConta)//switch para as opções da conta 
+                switch (opcaoConta)
                 {
                     case 1:
                         Console.Write("\nValor para depósito: ");
@@ -261,7 +281,21 @@ public class Program
                         break;
 
                     case 7:
+                        banco.VerDivida(conta);
+                        Console.WriteLine("Pressione qualquer tecla para continuar...");
+                        Console.ReadKey();
+                        break;
+
+                    case 8:
+                        banco.Pagamento(conta);
+                        Console.WriteLine("Pressione qualquer tecla para continuar");
+                        Console.ReadKey();
+                        break;
+
+
+                    case 9:
                         return;
+
                 }
             }
             catch (Exception ex)

@@ -6,20 +6,18 @@
     public string Senha { get; }
     public double Saldo { get; protected set; }
 
-    private static int contador = 1000;
-
-    public void DefinirSaldoInicial(double saldo)
-    {
-        Saldo = saldo;
-    }
-
+    protected static int contador = 1000;
     protected ContaBancaria(string titular, string cpf, string senha)
     {
         NumeroConta = contador++;
         Titular = titular;
         CPF = cpf;
         Senha = senha;
-        Saldo = 0;
+    }
+
+    public void DefinirSaldoInicial(double saldo)
+    {
+        Saldo = saldo;
     }
 
     public void Depositar(double valor)
