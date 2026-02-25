@@ -1,5 +1,7 @@
 ﻿using ModoADMIN;
 using System.Diagnostics;
+using System.Media;
+
 public class Program
 {
     static BancoService banco = new BancoService();//inicia o serviço 
@@ -13,12 +15,13 @@ public class Program
         {
             double porcentagem = (double)i / total;
             int progresso = (int)(porcentagem * 30);
-
             Console.Write("\r[");
             Console.Write(new string('█', progresso));
             Console.Write(new string(' ', 30 - progresso));
             Console.Write($"] {porcentagem:P0}");
             Thread.Sleep(30);
+            TocarSom();//toca um sonzin legau
+
         }
         while (true)
         {
@@ -51,7 +54,7 @@ public class Program
 
                     break;
 
-                case 3:
+                case 3://mensagem de despedida
                     Console.WriteLine(@"
 ░█████╗░██████╗░██████╗░██╗░██████╗░░█████╗░██████╗░░█████╗░  ██████╗░░█████╗░██████╗░
 ██╔══██╗██╔══██╗██╔══██╗██║██╔════╝░██╔══██╗██╔══██╗██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
@@ -342,12 +345,29 @@ public class Program
 ██╔══██╗██╔══██║██║╚████║██║░░██╗██║░░██║░░████╔═████║░██║██║░░░░░██║░░░░░
 ██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
 ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
+
+
 ");
-        Console.WriteLine("Versão: 1.0 beta");
+
+        Console.WriteLine("Versão: 2.0 beta");
         Console.WriteLine("Desenvolvido por: Enzo Souza/Eleven");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Esse banco nunca vai falir ^o^");
         Console.ResetColor();
         Console.WriteLine("===========================================================================");
+
+    }
+    static void TocarSom()
+    {
+        var caminho = Path.Combine(
+   "_filedump",
+   "bancowillarquivosimportantes",
+   "audiowllbank.wav"//tocar audios :)
+);
+#pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+
+        SoundPlayer player = new SoundPlayer(caminho);
+        player.Play();
+#pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
     }
 }

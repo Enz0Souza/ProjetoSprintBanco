@@ -1,6 +1,6 @@
 ﻿public abstract class ContaBancaria
 {
-    public int NumeroConta { get; }
+    public int NumeroConta { get; private set; }
     public string Titular { get; }
     public string CPF { get; }
     public string Senha { get; }
@@ -34,5 +34,10 @@
             throw new Exception("Saldo insuficiente");
 
         Saldo -= valor;
+    }
+
+    internal void DefinirNumeroConta(int v)
+    {
+        NumeroConta = v;
     }
 }

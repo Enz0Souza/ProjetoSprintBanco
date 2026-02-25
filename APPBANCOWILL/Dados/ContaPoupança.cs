@@ -23,10 +23,19 @@
 
     public void CalcularRendimento()
     {
-        if ((DateTime.Now - ultimoRendimento).TotalDays < 2)
+        if (Saldo < 5)
+        {
+            Console.WriteLine("Saldo insuficiente para começar rendimento (saldo mínimo de 5 reais)");
+            return;
+
+        }
+
+
+
+        if ((DateTime.Now - ultimoRendimento).TotalMinutes < 1)
             throw new Exception("Rendimento já aplicado para esta conta neste período.");
 
-        double rendimento = Saldo * 0.05;
+        double rendimento = Saldo * 0.05;//5%
         Saldo += rendimento;
         ultimoRendimento = DateTime.Now;
 
@@ -41,5 +50,9 @@
             $"dados/conta_{NumeroConta}_rendimento.txt",
             ultimoRendimento.ToString("O")
         );
+        Console.WriteLine(
+               $"Rendimento aplicado! Novo saldo: {Saldo:C}"
+           );
+
     }
 }

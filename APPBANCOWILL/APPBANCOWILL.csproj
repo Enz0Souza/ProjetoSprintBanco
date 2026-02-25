@@ -5,6 +5,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <DisableImplicitProgramMain>true</DisableImplicitProgramMain>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,10 +15,20 @@
     <None Remove="Funcionalidades\**" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\qrcode-pix.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\audiowllbank.wav">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
   <ItemGroup>
-    <None Update="_filedump\bancowillarquivosimportantes\Rick Astley - Never Gonna Give You Up %28Official Video%29 %284K Remaster%29 - Rick Astley %281080p, h264, youtube%29.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="System.Windows.Extensions" Version="10.0.3" />
   </ItemGroup>
 
 </Project>

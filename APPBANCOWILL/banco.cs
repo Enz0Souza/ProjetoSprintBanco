@@ -1,8 +1,10 @@
-﻿public class BancoService
+﻿using System.Diagnostics;
+
+public class BancoService
 {
     private List<ContaBancaria> contas = new();
-    private const string arquivo = "contas.txt";
-
+    private readonly string arquivo =
+        Path.Combine(AppContext.BaseDirectory, "contas.txt");//path do txt
 
     public BancoService()
     {
@@ -12,7 +14,7 @@
         Carregar();
     }
 
-    public void CriarConta()
+    public void CriarConta()//Criação de conta
     {
         Console.Write("Nome: ");
         string nome = Console.ReadLine()!;
@@ -52,7 +54,7 @@
         Console.Clear();
     }
 
-    public ContaBancaria Login(string cpf, string senha)
+    public ContaBancaria Login(string cpf, string senha)//Sistema login
     {
         ContaBancaria conta = contas
             .FirstOrDefault(c => c.CPF == cpf && c.Senha == senha)
@@ -61,8 +63,11 @@
         return conta;
     }
 
-    public void Salvar()
+    public void Salvar()//salvar as informações
     {
+        if (contas.Count == 0)
+            return;
+
         File.WriteAllLines(arquivo,
             contas.Select(c =>
             {
@@ -78,34 +83,50 @@
 
     private void Carregar()
     {
-        foreach (var linha in File.ReadAllLines(arquivo))
+        contas.Clear();
+
+        if (!File.Exists(arquivo))
+            return;
+
+        try
         {
-            if (string.IsNullOrWhiteSpace(linha))
-                continue;
-
-            var p = linha.Split(';');
-
-            ContaBancaria conta = p[5] switch
+            foreach (var linha in File.ReadAllLines(arquivo))
             {
-                nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
-                nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
-                nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
-                _ => throw new Exception("Tipo inválido")
-            };
+                if (string.IsNullOrWhiteSpace(linha))
+                    continue;
 
-            conta.DefinirSaldoInicial(double.Parse(p[4]));
+                var p = linha.Split(';');
 
-            if (conta is ContaEmpresarial ce && p.Length >= 8)
-            {
-                double divida = double.Parse(p[6]);
-                DateTime data = DateTime.Parse(p[7]);
-                ce.ImportarDados(divida, data);
+                ContaBancaria conta = p[5] switch
+                {
+                    nameof(ContaCorrente) => new ContaCorrente(p[1], p[2], p[3]),
+                    nameof(ContaPoupanca) => new ContaPoupanca(p[1], p[2], p[3]),
+                    nameof(ContaEmpresarial) => new ContaEmpresarial(p[1], p[2], p[3]),
+                    _ => throw new Exception("Tipo inválido no arquivo")
+                };
+
+                conta.DefinirNumeroConta(int.Parse(p[0]));
+                conta.DefinirSaldoInicial(double.Parse(p[4]));
+
+                if (conta is ContaEmpresarial ce && p.Length >= 8)
+                {
+                    ce.ImportarDados(
+                        double.Parse(p[6]),
+                        DateTime.Parse(p[7])
+                    );
+                }
+
+                contas.Add(conta);
             }
-
-            contas.Add(conta);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao carregar contas.txt:");
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("Arquivo pode estar corrompido.");
         }
     }
-    public void ListarContas()
+    public void ListarContas()//lista as contas existentes no admin
     {
         if (contas.Count == 0)
         {
@@ -128,7 +149,7 @@
 
     }
 
-    public void SolicitarEmprestimo(ContaBancaria contaLogada)
+    public void SolicitarEmprestimo(ContaBancaria contaLogada)//sistema de emprestimo
     {
         if (contaLogada is not ContaEmpresarial contaEmpresarial)
         {
@@ -185,9 +206,6 @@
             contaPoupanca.CalcularRendimento();
             Salvar();
 
-            Console.WriteLine(
-                $"Rendimento aplicado! Novo saldo: {contaPoupanca.Saldo:C}"
-            );
 
 
         }
@@ -234,21 +252,79 @@
 
     public void Pagamento(ContaBancaria conta)
     {
-        Console.WriteLine("Escolha a forma de pagamanento 1 - tranferencia  2 - pix");
-        if (!int.TryParse(Console.ReadLine(), out int entrar))
-            switch (entrar)
-            {
-                case 1:
-                    Console.WriteLine("sistema em implementação");
-                    Thread.Sleep(1000);
-                    break;
+        Console.WriteLine("Escolha a forma de pagamento:");
+        Console.WriteLine("1 - Transferência");
+        Console.WriteLine("2 - Pix");
 
-                case 2:
-                    Console.WriteLine("sistema em implementação");
-                    Thread.Sleep(1000);
-                    break;
+        if (!int.TryParse(Console.ReadLine(), out int pagamento))
+        {
+            Console.WriteLine("Opção inválida!");
+            return;
+        }
 
-            }
+        switch (pagamento)
+        {
+            case 1:
+                Console.Write("Digite o CPF do destinatário: ");
+                string destinatarioCpf = Console.ReadLine()!;
+
+                Console.Write("Digite o valor da transferência: ");
+                if (!double.TryParse(Console.ReadLine(), out double valor))
+                {
+                    Console.WriteLine("Valor inválido.");
+                    break;
+                }
+
+                if (valor <= 0)
+                {
+                    Console.WriteLine("O valor deve ser maior que zero.");
+                    break;
+                }
+
+                if (conta.Saldo < valor)
+                {
+                    Console.WriteLine("Saldo insuficiente.");
+                    Thread.Sleep(1500);
+                    break;
+                }
+
+                conta.Sacar(valor);
+                Salvar();
+
+                Console.WriteLine("Transferência realizada com sucesso!");
+                Console.WriteLine($"Destino (CPF): {destinatarioCpf}");
+                Console.WriteLine($"Valor: {valor:C}");
+                Console.WriteLine($"Saldo atual: {conta.Saldo:C}");
+                Thread.Sleep(1500);
+                break;
+            case 2:
+                string caminhoImagem = Path.Combine(
+                    AppContext.BaseDirectory,
+                    "_filedump",
+                    "bancowillarquivosimportantes",
+                    "qrcode-pix.png"
+                );
+
+                if (!File.Exists(caminhoImagem))
+                {
+                    Console.WriteLine("QR Code do Pix não encontrado!");
+                    break;
+                }
+
+                Console.WriteLine("Abrindo QR Code do Pix...");
+                Thread.Sleep(1000);
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = caminhoImagem,
+                    UseShellExecute = true
+                });
+                break;
+
+            default:
+                Console.WriteLine("Forma de pagamento inexistente.");
+                break;
+        }
     }
 
 }
