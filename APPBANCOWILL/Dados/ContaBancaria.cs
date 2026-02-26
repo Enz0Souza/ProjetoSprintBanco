@@ -26,6 +26,9 @@
             throw new Exception("Valor inválido.");
 
         Saldo += valor;
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Depósito de {valor:C} realizado com sucesso! Novo saldo: {Saldo:C}");
+        Console.ResetColor();
     }
 
     public virtual void Sacar(double valor)

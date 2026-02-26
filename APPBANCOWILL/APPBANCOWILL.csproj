@@ -27,6 +27,12 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) - Rick Astley (1080p, h264, youtube).mp4">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="System.Windows.Extensions" Version="10.0.3" />
   </ItemGroup>

@@ -16,7 +16,7 @@
     public override void Sacar(double valor)
     {
         if (valor > Saldo)
-            throw new Exception("Saldo insuficiente");
+            throw new Exception("\x1b[38;5;9mSaldo insuficiente\x1b[0m");
 
         Saldo -= valor;
     }
@@ -50,9 +50,11 @@
             $"dados/conta_{NumeroConta}_rendimento.txt",
             ultimoRendimento.ToString("O")
         );
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine(
                $"Rendimento aplicado! Novo saldo: {Saldo:C}"
            );
+        Console.ResetColor();
 
     }
 }

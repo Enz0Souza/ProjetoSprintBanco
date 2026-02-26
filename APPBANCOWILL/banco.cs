@@ -167,8 +167,9 @@ public class BancoService
         contaEmpresarial.SolicitarEmprestimo(valor);
 
         Salvar();
-
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Empréstimo solicitado com sucesso!");
+        Console.ResetColor();
         Console.WriteLine($"Saldo atual: {contaEmpresarial.Saldo:C}");
     }
 

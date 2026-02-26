@@ -10,26 +10,37 @@ public class Program
     {
         int total = 50;//sistema de animação de carregamento
         Console.WriteLine("Carregando sistema bancário...\n");
-
         for (int i = 0; i <= total; i++)
         {
             double porcentagem = (double)i / total;
             int progresso = (int)(porcentagem * 30);
             Console.Write("\r[");
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(new string('█', progresso));
+            Console.ResetColor();
             Console.Write(new string(' ', 30 - progresso));
             Console.Write($"] {porcentagem:P0}");
             Thread.Sleep(30);
             TocarSom();//toca um sonzin legau
-
         }
         while (true)
         {
             ExibirLogo();//exibe o logo do banco
             string nomeUsuario = Environment.UserName;
-            Console.WriteLine($"\nBem-vindo ao sistema bancário {nomeUsuario}");//saudação que puxa o nome do pc
-            Console.WriteLine("\nDigite 1 para entrar na sua conta e 2 para entrar no admin ou pressione 3 para sair do app");
-
+            Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;28m{nomeUsuario}\x1b[0m");//saudação que puxa o nome do pc
+            Console.Write("\nDigite ");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("1");
+            Console.ResetColor();
+            Console.Write(" para entrar na sua conta, ");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("2");
+            Console.ResetColor();
+            Console.Write(" para entrar no admin ou pressione ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("3");
+            Console.ResetColor();
+            Console.WriteLine(" para sair do app");
             if (!int.TryParse(Console.ReadLine(), out int entrar))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -38,7 +49,6 @@ public class Program
                 Thread.Sleep(1500);
                 continue;
             }
-
             switch (entrar)
             {
                 case 1:
@@ -49,9 +59,6 @@ public class Program
                     Console.Clear();
                     ExibirLogo();
                     MenuAdmin();//entra no menu do admin
-
-
-
                     break;
 
                 case 3://mensagem de despedida
@@ -128,7 +135,6 @@ public class Program
             }
         }
     }
-
     static void MenuCliente()//Função do menu do cliente
     {
         int opcao;
@@ -136,9 +142,13 @@ public class Program
         {
             Console.Clear();
             ExibirLogo();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\n1 - Acessar conta");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("2 - Criar conta");
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("3 - Sair do programa");
+            Console.ResetColor();
 
             if (!int.TryParse(Console.ReadLine(), out opcao))
                 continue;
@@ -166,21 +176,19 @@ public class Program
                 case 3:
                     return;
             }
-
         } while (true);
     }
-
+    
     static void LoginConta()//Função para logar na conta do cliente
     {
         try
         {
             Console.Clear();
             ExibirLogo();
-
             Console.Write("\nDigite seu CPF: ");
             string cpf = Console.ReadLine()!;
             if (cpf.Length != 11)
-                throw new Exception("CPF inválido.");
+                throw new Exception(" CPF inválido.");
 
 
             Console.Write("Digite sua senha: ");
@@ -225,8 +233,6 @@ public class Program
             Console.WriteLine("9 - Sair da conta");
             Console.WriteLine("============================");
 
-
-
             if (!int.TryParse(Console.ReadLine(), out opcaoConta))
                 continue;
 
@@ -247,14 +253,18 @@ public class Program
                         Console.Write("\nValor para saque: ");
                         double saque = double.Parse(Console.ReadLine()!);
                         conta.Sacar(saque);
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("\nSaque realizado com sucesso!");
+                        Console.ResetColor();
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         banco.Salvar();
                         break;
 
                     case 3:
-                        Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo}");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo:N2}");
+                        Console.ResetColor();
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
@@ -327,13 +337,10 @@ public class Program
             Thread.Sleep(1500);
             return;
         }
-
         BancoService banco = new BancoService();
         AdminAcess admin = new AdminAcess(banco);
         admin.Admin();
-
     }
-
     static void ExibirLogo()//Função para exibir o logo do banco
     {
         Console.Clear();
@@ -345,17 +352,13 @@ public class Program
 ██╔══██╗██╔══██║██║╚████║██║░░██╗██║░░██║░░████╔═████║░██║██║░░░░░██║░░░░░
 ██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
 ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
-
-
 ");
-
         Console.WriteLine("Versão: 2.0 beta");
-        Console.WriteLine("Desenvolvido por: Enzo Souza/Eleven");
+        Console.WriteLine("Desenvolvido por: \x1b[38;5;171mEnzo Souza/Eleven\x1b[0m");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Esse banco nunca vai falir ^o^");
         Console.ResetColor();
         Console.WriteLine("===========================================================================");
-
     }
     static void TocarSom()
     {
