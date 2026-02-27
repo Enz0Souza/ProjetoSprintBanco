@@ -22,6 +22,15 @@
 
     public void Depositar(double valor)
     {
+        if(valor >= 8000 )
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Depósito acima ou igual a oito mil detectado. Tentativa de deposito negada.");
+            Console.ResetColor();
+            Console.WriteLine("Voltando ao menu principal...");
+            Thread.Sleep(5000); 
+            return;
+        }
         if (valor <= 0)
             throw new Exception("Valor inválido.");
 

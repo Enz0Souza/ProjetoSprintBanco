@@ -1,6 +1,6 @@
 ﻿public class ContaCorrente : ContaBancaria
 {
-    private const double Taxa = 2.50;
+    private const double Taxa = 5;//AIN HADADI TAXI ADADIIIII
 
     public ContaCorrente(string titular, string cpf, string senha)
         : base(titular, cpf, senha) { }

@@ -25,7 +25,9 @@
     {
         if (Saldo < 5)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Saldo insuficiente para começar rendimento (saldo mínimo de 5 reais)");
+            Console.ResetColor();
             return;
 
         }
@@ -33,7 +35,7 @@
 
 
         if ((DateTime.Now - ultimoRendimento).TotalMinutes < 1)
-            throw new Exception("Rendimento já aplicado para esta conta neste período.");
+            throw new Exception("\x1b[38;5;9mRendimento já aplicado para esta conta neste período\u001b[0m.");
 
         double rendimento = Saldo * 0.05;//5%
         Saldo += rendimento;

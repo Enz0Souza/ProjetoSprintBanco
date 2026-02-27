@@ -1,6 +1,11 @@
 ﻿using ModoADMIN;
 using System.Diagnostics;
 using System.Media;
+using System.Runtime.Intrinsics.Arm;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+
 
 public class Program
 {
@@ -39,8 +44,8 @@ public class Program
             Console.Write(" para entrar no admin ou pressione ");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("3");
-            Console.ResetColor();
             Console.WriteLine(" para sair do app");
+            Console.ResetColor();
             if (!int.TryParse(Console.ReadLine(), out int entrar))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -178,7 +183,7 @@ public class Program
             }
         } while (true);
     }
-    
+
     static void LoginConta()//Função para logar na conta do cliente
     {
         try
@@ -230,7 +235,9 @@ public class Program
             Console.WriteLine("6 - Rendimento");
             Console.WriteLine("7 - Ver Divida");
             Console.WriteLine("8 - Tranferencia");
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("9 - Sair da conta");
+            Console.ResetColor();
             Console.WriteLine("============================");
 
             if (!int.TryParse(Console.ReadLine(), out opcaoConta))
@@ -262,10 +269,32 @@ public class Program
                         break;
 
                     case 3:
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\n========================================");
+                        Console.WriteLine("EXTRATO");
+                        Console.WriteLine($"\nNome:{conta.Titular}");
+                        Console.WriteLine($"Número da conta: {conta.NumeroConta}");
+                        Console.WriteLine($"CPF: {conta.CPF}");
                         Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo:N2}");
-                        Console.ResetColor();
+                        Console.WriteLine("\n========================================");
+                        Console.WriteLine("Deseja salvar o extrato?");
+                        Console.WriteLine("1 - Sim");
+                        Console.WriteLine("2 - Não");
+                        var escolha = Console.ReadLine();
+                        if (escolha == "1")
+                        {
+
+                            GerarPDF(conta);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+
+
+
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
+
                         Console.ReadKey();
                         break;
 
@@ -372,5 +401,43 @@ public class Program
         SoundPlayer player = new SoundPlayer(caminho);
         player.Play();
 #pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+    }
+    static void GerarPDF(ContaBancaria conta)//geradir de extrato em pdf😍😍😍😍😍
+    {
+        try
+        {
+            string downloads = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads"
+            );
+
+            string path = Path.Combine(
+                downloads,
+                $"Extrato_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
+            );
+
+            Console.WriteLine("Salvando em: " + path);
+
+            using (var writer = new PdfWriter(path))
+            using (var pdf = new PdfDocument(writer))
+            using (var document = new Document(pdf))
+            {
+                document.Add(new Paragraph("=========== EXTRATO ==========="));
+                document.Add(new Paragraph("\nBANCO WILL"));
+                document.Add(new Paragraph($"Nome: {conta.Titular}"));
+                document.Add(new Paragraph($"Número da conta: {conta.NumeroConta}"));
+                document.Add(new Paragraph($"CPF: {conta.CPF}"));
+                document.Add(new Paragraph($"Saldo atual: R$ {conta.Saldo:N2}"));
+                document.Add(new Paragraph($"Data de emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}"));
+                document.Add(new Paragraph("================================"));
+                document.Add(new Paragraph("\nObrigado por usar o Banco Will!"));
+            }
+            Console.WriteLine("PDF criado com sucesso e salvo em downloads!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERRO COMPLETO:");
+            Console.WriteLine(ex.ToString());
+        }
     }
 }
