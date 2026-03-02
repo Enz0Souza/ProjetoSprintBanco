@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics.Arm;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
-
+//componentes usados no projeto, como o iText para gerar pdfs, System.Media para tocar sons e System.Diagnostics para abrir links e arquivos
 
 public class Program
 {
@@ -252,6 +252,27 @@ public class Program
                         double dep = double.Parse(Console.ReadLine()!);
                         conta.Depositar(dep);
                         banco.Salvar();
+                        tocarsomdeposito();
+                        Thread.Sleep(2500);
+                        if (Confirmar("Deseja gerar o extrato?"))
+                        {
+                            try
+                            {
+                                PdfService.GerarExtratoCompleto(conta, "Depósito", dep);
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Extrato gerado com sucesso!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"Erro ao gerar PDF: {ex.Message}");
+                            }
+                            finally
+                            {
+                                Console.ResetColor();
+                            }
+                        }
+                        Thread.Sleep(1000);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
@@ -263,6 +284,25 @@ public class Program
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("\nSaque realizado com sucesso!");
                         Console.ResetColor();
+                        if (Confirmar("Deseja gerar o extrato?"))
+                        {
+                            try
+                            {
+                                PdfService.GerarExtratoCompleto(conta, "Saque", saque);
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Extrato gerado com sucesso!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"Erro ao gerar PDF: {ex.Message}");
+                            }
+                            finally
+                            {
+                                Console.ResetColor();
+                            }
+                        }
+                        Thread.Sleep(1000);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         banco.Salvar();
@@ -276,25 +316,26 @@ public class Program
                         Console.WriteLine($"CPF: {conta.CPF}");
                         Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo:N2}");
                         Console.WriteLine("\n========================================");
-                        Console.WriteLine("Deseja salvar o extrato?");
-                        Console.WriteLine("1 - Sim");
-                        Console.WriteLine("2 - Não");
-                        var escolha = Console.ReadLine();
-                        if (escolha == "1")
+                        if (Confirmar("Deseja gerar o extrato?"))
                         {
-
-                            GerarPDF(conta);
+                            try
+                            {
+                                PdfService.GerarExtratoCompleto(conta, null, 0);
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Extrato gerado com sucesso!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"Erro ao gerar PDF: {ex.Message}");
+                            }
+                            finally
+                            {
+                                Console.ResetColor();
+                            }
                         }
-                        else
-                        {
-                            continue;
-                        }
-
-
-
-
+                        Thread.Sleep(1500);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
-
                         Console.ReadKey();
                         break;
 
@@ -375,12 +416,12 @@ public class Program
         Console.Clear();
         Console.WriteLine("===========================================================================");
         Console.WriteLine(@"
-██████╗░░█████╗░███╗░░██╗░█████╗░░█████╗░░██╗░░░░░░░██╗██╗██╗░░░░░██╗░░░░░
-██╔══██╗██╔══██╗████╗░██║██╔══██╗██╔══██╗░██║░░██╗░░██║██║██║░░░░░██║░░░░░
-██████╦╝███████║██╔██╗██║██║░░╚═╝██║░░██║░╚██╗████╗██╔╝██║██║░░░░░██║░░░░░
-██╔══██╗██╔══██║██║╚████║██║░░██╗██║░░██║░░████╔═████║░██║██║░░░░░██║░░░░░
-██████╦╝██║░░██║██║░╚███║╚█████╔╝╚█████╔╝░░╚██╔╝░╚██╔╝░██║███████╗███████╗
-╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝
+██████╗  █████╗ ███╗  ██╗ █████╗  █████╗  ██╗       ██╗██╗██╗     ██╗
+██╔══██╗██╔══██║████╗ ██║██╔══██╗██╔══██╗ ██║  ██╗  ██║██║██║     ██║
+██████╦╝███████║██╔██╗██║██║  ╚═╝██║  ██║ ╚██╗████╗██╔╝██║██║     ██║
+██╔══██╗██╔══██║██║╚████║██║  ██╗██║  ██║  ████╔═████║ ██║██║     ██║
+██████╦╝██║  ██║██║ ╚███║╚█████╔╝╚█████╔╝  ╚██╔╝ ╚██╔╝ ██║███████╗███████╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚══╝ ╚════╝  ╚════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
 ");
         Console.WriteLine("Versão: 2.0 beta");
         Console.WriteLine("Desenvolvido por: \x1b[38;5;171mEnzo Souza/Eleven\x1b[0m");
@@ -396,48 +437,55 @@ public class Program
    "bancowillarquivosimportantes",
    "audiowllbank.wav"//tocar audios :)
 );
+
 #pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
 
         SoundPlayer player = new SoundPlayer(caminho);
         player.Play();
 #pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
     }
-    static void GerarPDF(ContaBancaria conta)//geradir de extrato em pdf😍😍😍😍😍
+   
+    static void tocarsomdeposito()
     {
-        try
+        var caminho = Path.Combine(
+            "_filedump",
+            "bancowillarquivosimportantes",
+            "Cash-Register-Sound-Effect-_short-Free-Sound-Effects-On-voice-meme-effects-_youtube_.wav" //somdeposito :)
+        );
+
+#pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+
+        SoundPlayer player = new SoundPlayer(caminho);
+        player.Play();
+#pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+    }
+
+    static bool Confirmar(string mensagem)//Função para confirmar ações do cliente, como gerar extrato ou não
+    {
+        while (true)
         {
-            string downloads = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "Downloads"
-            );
+            Console.WriteLine(mensagem + " (s/n)");
+            string? resposta = Console.ReadLine();
 
-            string path = Path.Combine(
-                downloads,
-                $"Extrato_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
-            );
-
-            Console.WriteLine("Salvando em: " + path);
-
-            using (var writer = new PdfWriter(path))
-            using (var pdf = new PdfDocument(writer))
-            using (var document = new Document(pdf))
+            if (string.IsNullOrWhiteSpace(resposta))
             {
-                document.Add(new Paragraph("=========== EXTRATO ==========="));
-                document.Add(new Paragraph("\nBANCO WILL"));
-                document.Add(new Paragraph($"Nome: {conta.Titular}"));
-                document.Add(new Paragraph($"Número da conta: {conta.NumeroConta}"));
-                document.Add(new Paragraph($"CPF: {conta.CPF}"));
-                document.Add(new Paragraph($"Saldo atual: R$ {conta.Saldo:N2}"));
-                document.Add(new Paragraph($"Data de emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}"));
-                document.Add(new Paragraph("================================"));
-                document.Add(new Paragraph("\nObrigado por usar o Banco Will!"));
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Digite apenas S ou N.");
+                Console.ResetColor();
+                continue;
             }
-            Console.WriteLine("PDF criado com sucesso e salvo em downloads!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("ERRO COMPLETO:");
-            Console.WriteLine(ex.ToString());
+
+            resposta = resposta.Trim().ToLower();
+
+            if (resposta == "s")
+                return true;
+
+            if (resposta == "n")
+                return false;
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Opção inválida! Digite apenas S ou N.");
+            Console.ResetColor();
         }
     }
 }

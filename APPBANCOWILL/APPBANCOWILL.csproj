@@ -33,6 +33,18 @@
 		</None>
 	</ItemGroup>
 	
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\Cash-Register-Sound-Effect-_short-Free-Sound-Effects-On-voice-meme-effects-_youtube_.wav">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\Logobancowill.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="itext.bouncy-castle-adapter" Version="9.5.0" />
     <PackageReference Include="itext7" Version="9.5.0" />

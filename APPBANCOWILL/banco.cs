@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 public class BancoService
 {
@@ -19,6 +20,11 @@ public class BancoService
         Console.Write("Nome: ");
         string nome = Console.ReadLine()!;
 
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new Exception("Nome não pode ser vazio");
+
+        if (!Regex.IsMatch(nome, @"^[a-zA-ZÀ-ÿ\s]+$"))
+            throw new Exception("Nome não pode conter números ou caracteres especiais");
 
         Console.Write("CPF: ");
         string cpf = Console.ReadLine()!;
