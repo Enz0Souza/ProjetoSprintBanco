@@ -1,16 +1,10 @@
 ﻿using ModoADMIN;
 using System.Diagnostics;
 using System.Media;
-using System.Runtime.Intrinsics.Arm;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
 //componentes usados no projeto, como o iText para gerar pdfs, System.Media para tocar sons e System.Diagnostics para abrir links e arquivos
-
 public class Program
 {
     static BancoService banco = new BancoService();//inicia o serviço 
-
     public static void Main()
     {
         int total = 50;//sistema de animação de carregamento
@@ -30,6 +24,7 @@ public class Program
         }
         while (true)
         {
+            Thread.Sleep(500);
             ExibirLogo();//exibe o logo do banco
             string nomeUsuario = Environment.UserName;
             Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;28m{nomeUsuario}\x1b[0m");//saudação que puxa o nome do pc
@@ -68,19 +63,19 @@ public class Program
 
                 case 3://mensagem de despedida
                     Console.WriteLine(@"
-░█████╗░██████╗░██████╗░██╗░██████╗░░█████╗░██████╗░░█████╗░  ██████╗░░█████╗░██████╗░
-██╔══██╗██╔══██╗██╔══██╗██║██╔════╝░██╔══██╗██╔══██╗██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
-██║░░██║██████╦╝██████╔╝██║██║░░██╗░███████║██║░░██║██║░░██║  ██████╔╝██║░░██║██████╔╝
-██║░░██║██╔══██╗██╔══██╗██║██║░░╚██╗██╔══██║██║░░██║██║░░██║  ██╔═══╝░██║░░██║██╔══██╗
-╚█████╔╝██████╦╝██║░░██║██║╚██████╔╝██║░░██║██████╔╝╚█████╔╝  ██║░░░░░╚█████╔╝██║░░██║
-░╚════╝░╚═════╝░╚═╝░░╚═╝╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░╚════╝░  ╚═╝░░░░░░╚════╝░╚═╝░░╚═╝
+ █████╗ ██████╗ ██████╗ ██╗ ██████╗  █████╗ ██████╗  █████╗   ██████╗  █████╗ ██████╗ 
+██╔══██╗██╔══██╗██╔══██╗██║██╔════╝ ██╔══██╗██╔══██╗██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
+██║  ██║██████╦╝██████╔╝██║██║  ██╗ ███████║██║  ██║██║  ██║  ██████╔╝██║  ██║██████╔╝
+██║  ██║██╔══██╗██╔══██╗██║██║  ╚██╗██╔══██║██║  ██║██║  ██║  ██╔═══╝ ██║  ██║██╔══██╗
+╚█████╔╝██████╦╝██║  ██║██║╚██████╔╝██║  ██║██████╔╝╚█████╔╝  ██║     ╚█████╔╝██║  ██║
+ ╚════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝  ╚════╝   ╚═╝      ╚════╝ ╚═╝  ╚═╝
 
-██╗░░░██╗░██████╗░█████╗░██████╗░  ░█████╗░  ░█████╗░██████╗░██████╗░
-██║░░░██║██╔════╝██╔══██╗██╔══██╗  ██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
-██║░░░██║╚█████╗░███████║██████╔╝  ██║░░██║  ███████║██████╔╝██████╔╝
-██║░░░██║░╚═══██╗██╔══██║██╔══██╗  ██║░░██║  ██╔══██║██╔═══╝░██╔═══╝░
-╚██████╔╝██████╔╝██║░░██║██║░░██║  ╚█████╔╝  ██║░░██║██║░░░░░██║░░░░░
-░╚═════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝  ░╚════╝░  ╚═╝░░╚═╝╚═╝░░░░░╚═╝░░░░░");
+██╗   ██╗ ██████╗ █████╗ ██████╗    █████╗    █████╗ ██████╗ ██████╗ 
+██║   ██║██╔════╝██╔══██╗██╔══██╗  ██╔══██╗  ██╔══██╗██╔══██╗██╔══██╗
+██║   ██║╚█████╗ ███████║██████╔╝  ██║  ██║  ███████║██████╔╝██████╔╝
+██║   ██║ ╚═══██╗██╔══██║██╔══██╗  ██║  ██║  ██╔══██║██╔═══╝ ██╔═══╝ 
+╚██████╔╝██████╔╝██║  ██║██║  ██║  ╚█████╔╝  ██║  ██║██║     ██║     
+ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚════╝   ╚═╝  ╚═╝╚═╝     ╚═╝     ");
                     Thread.Sleep(1500);
                     return;
 
@@ -126,11 +121,11 @@ public class Program
 
                     Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
                     Console.ReadKey();
-                    break;
+                    break;//NAO OLHA ISSO AQ
 
                 case 07072007://Meu Instagram
                     Process.Start(new ProcessStartInfo("https://www.instagram.com/enzoo_souzza/") { UseShellExecute = true });
-                    break;
+                    break;//nEM ISSO
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Opção inválida!");
@@ -161,13 +156,13 @@ public class Program
             switch (opcao)
             {
                 case 1:
-                    LoginConta();
+                    LoginConta();//Parametro de login
                     break;
 
                 case 2:
                     try
                     {
-                        banco.CriarConta();
+                        banco.CriarConta();//Parametro de criar conta
                     }
                     catch (Exception ex)
                     {
@@ -179,7 +174,10 @@ public class Program
                     break;
 
                 case 3:
+
                     return;
+
+                  
             }
         } while (true);
     }
@@ -280,6 +278,8 @@ public class Program
                     case 2:
                         Console.Write("\nValor para saque: ");
                         double saque = double.Parse(Console.ReadLine()!);
+                        TocarSomSaque();
+                        Thread.Sleep(7000);
                         conta.Sacar(saque);
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("\nSaque realizado com sucesso!");
@@ -438,13 +438,9 @@ public class Program
    "audiowllbank.wav"//tocar audios :)
 );
 
-#pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
-
-        SoundPlayer player = new SoundPlayer(caminho);
-        player.Play();
-#pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+        TocarSom(caminho);
     }
-   
+
     static void tocarsomdeposito()
     {
         var caminho = Path.Combine(
@@ -453,11 +449,7 @@ public class Program
             "Cash-Register-Sound-Effect-_short-Free-Sound-Effects-On-voice-meme-effects-_youtube_.wav" //somdeposito :)
         );
 
-#pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
-
-        SoundPlayer player = new SoundPlayer(caminho);
-        player.Play();
-#pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+        TocarSom(caminho);
     }
 
     static bool Confirmar(string mensagem)//Função para confirmar ações do cliente, como gerar extrato ou não
@@ -487,5 +479,27 @@ public class Program
             Console.WriteLine("Opção inválida! Digite apenas S ou N.");
             Console.ResetColor();
         }
+    }
+
+    static void TocarSomSaque()
+    {
+        var caminho = Path.Combine(
+            "_filedump",
+            "bancowillarquivosimportantes",
+            "Money Counter - Sound Effect for Editing - Sound Library (youtube).wav" //som saque :)
+        );
+        TocarSom(caminho);
+
+    }
+
+
+    public static void TocarSom(string caminho)//Função para tocar sons, recebe o caminho do audio como parametro
+    {
+#pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+
+        SoundPlayer player = new SoundPlayer(caminho);
+        player.Play();
+#pragma warning restore CA1416 // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
+
     }
 }

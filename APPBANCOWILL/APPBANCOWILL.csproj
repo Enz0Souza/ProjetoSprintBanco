@@ -45,6 +45,12 @@
 		</None>
 	</ItemGroup>
 	
+	<ItemGroup>
+		<None Update="_filedump\bancowillarquivosimportantes\Money Counter - Sound Effect for Editing - Sound Library (youtube).wav">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="itext.bouncy-castle-adapter" Version="9.5.0" />
     <PackageReference Include="itext7" Version="9.5.0" />
