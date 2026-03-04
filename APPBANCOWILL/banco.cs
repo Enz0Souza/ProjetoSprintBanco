@@ -34,12 +34,26 @@ public class BancoService
 
         if (string.IsNullOrWhiteSpace(cpf))
             throw new Exception("CPF não pode ser vazio");
+        if (cpf.Contains(" "))
+            throw new Exception("CPF não pode conter espaços");
+        if (cpf.Any(c => !char.IsDigit(c)))
+            throw new Exception("CPF deve conter apenas dígitos numéricos");
 
         if (cpf.Length != 11 || !cpf.All(char.IsDigit))
             throw new Exception("CPF deve conter 11 dígitos numéricos");
 
         Console.Write("Senha: ");
         string senha = Console.ReadLine()!;
+        if (string.IsNullOrWhiteSpace(senha))
+            throw new Exception("Senha não pode ser vazio");
+        if(senha.Contains(" "))
+            throw new Exception("Senha não pode conter espaços");
+        if (senha.Any(c => !char.IsDigit(c)))
+            throw new Exception("Senha deve conter apenas dígitos numéricos");
+
+        if (senha.Length != 8 || !senha.All(char.IsDigit))
+            throw new Exception("Senha deve conter 8 dígitos numéricos");
+
 
         Console.WriteLine("1-Corrente | 2-Poupança | 3-Empresarial");
         int tipo = int.Parse(Console.ReadLine()!);
@@ -129,14 +143,16 @@ public class BancoService
         {
             Console.WriteLine("Erro ao carregar contas.txt:");
             Console.WriteLine(ex.Message);
-            Console.WriteLine("Arquivo pode estar corrompido.");
+            Console.WriteLine("Arquivo pode estar corrompido ou não foi encontrado.");
         }
     }
     public void ListarContas()//lista as contas existentes no admin
     {
         if (contas.Count == 0)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Nenhuma conta cadastrada.");
+            Console.ResetColor();
             return;
         }
 
@@ -149,7 +165,6 @@ public class BancoService
             Console.WriteLine($"Saldo: {conta.Saldo:C}");
             Console.WriteLine($"Tipo: {conta.GetType().Name}");
             Console.WriteLine("--------------------------------");
-
         }
 
 
@@ -329,7 +344,7 @@ public class BancoService
                 break;
 
             default:
-                Console.WriteLine("Forma de pagamento inexistente.");
+                Console.WriteLine("Opção Invalida.");
                 break;
         }
     }

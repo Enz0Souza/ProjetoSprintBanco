@@ -7,6 +7,7 @@ using iText.IO.Image;
 using iText.Layout.Borders;
 using iText.Kernel.Font;
 using iText.IO.Font.Constants;
+// Serviço para geração de extrato bancário em PDF usando iText7
 
 public static class PdfService
 {
@@ -135,11 +136,11 @@ public static class PdfService
         document.Add(new Paragraph("\n"));
 
         // RODAPÉz
-        document.Add(new Paragraph("Banco Will - Confiança e Segurança")//KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+        document.Add(new Paragraph("Banco Will - Confiança e Segurança")//KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkkkkkkkkkk
             .SetTextAlignment(TextAlignment.CENTER)
             .SetFontSize(10)
             .SetFontColor(ColorConstants.GRAY));
 
-        Console.WriteLine($"PDF criado com sucesso em: {path}");
+        Console.WriteLine($"Extrato criado com sucesso em: {path}");
     }
 }

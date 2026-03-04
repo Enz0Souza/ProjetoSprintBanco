@@ -1,7 +1,6 @@
 ﻿using ModoADMIN;
 using System.Diagnostics;
 using System.Media;
-//componentes usados no projeto, como o iText para gerar pdfs, System.Media para tocar sons e System.Diagnostics para abrir links e arquivos
 public class Program
 {
     static BancoService banco = new BancoService();//inicia o serviço 
@@ -26,7 +25,7 @@ public class Program
         {
             Thread.Sleep(500);
             ExibirLogo();//exibe o logo do banco
-            string nomeUsuario = Environment.UserName;
+            string nomeUsuario = Environment.UserName;//pega o nome do pc para usar na saudação
             Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;28m{nomeUsuario}\x1b[0m");//saudação que puxa o nome do pc
             Console.Write("\nDigite ");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -156,7 +155,17 @@ public class Program
             switch (opcao)
             {
                 case 1:
-                    LoginConta();//Parametro de login
+                    try
+                    {
+                        LoginConta();//Parametro de logar conta
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Erro: {ex.Message}");
+                        Console.ResetColor();
+                        Thread.Sleep(1500);
+                    }
                     break;
 
                 case 2:
@@ -174,14 +183,22 @@ public class Program
                     break;
 
                 case 3:
-
+                    try
+                    {
+                        Console.WriteLine("Saindo do programa...");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Erro: {ex.Message}");
+                        Console.ResetColor();
+                        Thread.Sleep(1500);
+                    }
                     return;
-
-                  
             }
+
         } while (true);
     }
-
     static void LoginConta()//Função para logar na conta do cliente
     {
         try
@@ -196,7 +213,7 @@ public class Program
 
             Console.Write("Digite sua senha: ");
             string senha = Console.ReadLine()!;
-            if (senha.Length < 6 || senha.Length > 8)
+            if (senha.Length < 1 || senha.Length > 8)
                 throw new Exception("Senha inválida.");
 
             ContaBancaria contaLogada = banco.Login(cpf, senha);
@@ -246,6 +263,8 @@ public class Program
                 switch (opcaoConta)
                 {
                     case 1:
+                        Console.Clear();
+                        ExibirLogo();
                         Console.Write("\nValor para depósito: ");
                         double dep = double.Parse(Console.ReadLine()!);
                         conta.Depositar(dep);
@@ -276,6 +295,8 @@ public class Program
                         break;
 
                     case 2:
+                        Console.Clear();
+                        ExibirLogo();
                         Console.Write("\nValor para saque: ");
                         double saque = double.Parse(Console.ReadLine()!);
                         TocarSomSaque();
@@ -309,6 +330,8 @@ public class Program
                         break;
 
                     case 3:
+                        Console.Clear();
+                        ExibirLogo();
                         Console.WriteLine("\n========================================");
                         Console.WriteLine("EXTRATO");
                         Console.WriteLine($"\nNome:{conta.Titular}");
@@ -340,6 +363,8 @@ public class Program
                         break;
 
                     case 4:
+                        Console.Clear();
+                        ExibirLogo();
                         banco.SolicitarEmprestimo(conta);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
@@ -347,6 +372,8 @@ public class Program
                         break;
 
                     case 5:
+                        Console.Clear();
+                        ExibirLogo();
                         banco.PagarEmprestimo(conta);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
                         Console.ReadKey();
@@ -355,6 +382,8 @@ public class Program
 
 
                     case 6:
+                        Console.Clear();
+                        ExibirLogo();
                         banco.AplicarRendimento(conta);
                         Thread.Sleep(1500);
                         Console.WriteLine("\nPressione qualquer tecla para continuar...");
@@ -364,12 +393,16 @@ public class Program
                         break;
 
                     case 7:
+                        Console.Clear();
+                        ExibirLogo();
                         banco.VerDivida(conta);
                         Console.WriteLine("Pressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
 
                     case 8:
+                        Console.Clear();
+                        ExibirLogo();
                         banco.Pagamento(conta);
                         Console.WriteLine("Pressione qualquer tecla para continuar");
                         Console.ReadKey();
@@ -480,7 +513,6 @@ public class Program
             Console.ResetColor();
         }
     }
-
     static void TocarSomSaque()
     {
         var caminho = Path.Combine(
@@ -491,8 +523,6 @@ public class Program
         TocarSom(caminho);
 
     }
-
-
     public static void TocarSom(string caminho)//Função para tocar sons, recebe o caminho do audio como parametro
     {
 #pragma warning disable CA1416  // Validar a compatibilidade da plataforma mas como to no windows n funfa aparecer isso
