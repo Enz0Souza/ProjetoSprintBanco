@@ -161,7 +161,7 @@ public class BancoService
             Console.WriteLine("--------------------------------");
             Console.WriteLine($"Conta: {conta.NumeroConta}");
             Console.WriteLine($"Titular: {conta.Titular}");
-            Console.WriteLine($"CPF: {conta.CPF}");
+            Console.WriteLine($"CPF: {FormatarCPF(conta.CPF)}");
             Console.WriteLine($"Saldo: {conta.Saldo:C}");
             Console.WriteLine($"Tipo: {conta.GetType().Name}");
             Console.WriteLine("--------------------------------");
@@ -347,6 +347,13 @@ public class BancoService
                 Console.WriteLine("Opção Invalida.");
                 break;
         }
+    }
+    public static string FormatarCPF(string cpf)
+    {
+        if (cpf.Length != 11)
+            return cpf;
+
+        return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
     }
 
 }

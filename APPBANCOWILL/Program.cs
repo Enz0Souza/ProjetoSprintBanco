@@ -1,4 +1,5 @@
-﻿using ModoADMIN;
+﻿using iText.Layout.Element;
+using ModoADMIN;
 using System.Diagnostics;
 using System.Media;
 public class Program
@@ -26,7 +27,7 @@ public class Program
             Thread.Sleep(500);
             ExibirLogo();//exibe o logo do banco
             string nomeUsuario = Environment.UserName;//pega o nome do pc para usar na saudação
-            Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;28m{nomeUsuario}\x1b[0m");//saudação que puxa o nome do pc
+            Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;196m{nomeUsuario}\x1b[38;5;231m");//saudação que puxa o nome do pc
             Console.Write("\nDigite ");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("1");
@@ -144,9 +145,9 @@ public class Program
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\n1 - Acessar conta");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("2 - Criar conta");
+            Console.WriteLine("\n2 - Criar conta");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("3 - Sair do programa");
+            Console.WriteLine("\n3 - Sair do programa");
             Console.ResetColor();
 
             if (!int.TryParse(Console.ReadLine(), out opcao))
@@ -336,7 +337,7 @@ public class Program
                         Console.WriteLine("EXTRATO");
                         Console.WriteLine($"\nNome:{conta.Titular}");
                         Console.WriteLine($"Número da conta: {conta.NumeroConta}");
-                        Console.WriteLine($"CPF: {conta.CPF}");
+                        Console.WriteLine($"CPF: {BancoService.FormatarCPF(conta.CPF)}");
                         Console.WriteLine($"\nSaldo atual: R$ {conta.Saldo:N2}");
                         Console.WriteLine("\n========================================");
                         if (Confirmar("Deseja gerar o extrato?"))

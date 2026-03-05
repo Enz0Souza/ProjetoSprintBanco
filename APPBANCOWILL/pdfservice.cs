@@ -69,7 +69,8 @@ public static class PdfService
         // DADOS CLIENTE
         document.Add(new Paragraph($"Titular: {conta.Titular}").SetFont(fonteNegrito));
         document.Add(new Paragraph($"Conta: {conta.NumeroConta}").SetFont(fonteNormal));
-        document.Add(new Paragraph($"CPF: {conta.CPF}").SetFont(fonteNormal));
+        document.Add(new Paragraph($"CPF: {BancoService.FormatarCPF(conta.CPF)}")
+            .SetFont(fonteNormal));
         document.Add(new Paragraph($"Data de emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}")
             .SetFont(fonteNormal));
 
