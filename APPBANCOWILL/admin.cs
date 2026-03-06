@@ -9,8 +9,6 @@
             _banco = banco;
         }
 
-
-
         public void Admin()
         {
             int opcao;
@@ -37,7 +35,7 @@
                         logoadm();
                         Console.WriteLine("Você escolheu ver as contas criadas!");
                         _banco.ListarContas();
-                        Console.WriteLine("Pressione qualquer tecla para continuar");
+                        Console.WriteLine("Pressione qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
 
@@ -53,7 +51,10 @@
                             try
                             {
                                 _banco.DeletarConta(numeroConta);
+                                Thread.Sleep(2000);
                                 Console.WriteLine("Conta deletada com sucesso!");
+                                Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                Console.ReadKey();
                             }
                             catch (Exception ex)
                             {
@@ -77,11 +78,11 @@
 
             } while (true);
         }
-    
-    public void logoadm()
+
+        public void logoadm()
         {
             Console.WriteLine("Bem-vindo ao modo admin!");
 
         }
     }
-    }
+}

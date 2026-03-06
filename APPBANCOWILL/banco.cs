@@ -1,18 +1,62 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
-
+using System.Security.Cryptography;
+using System.Text;
+using System.Security.AccessControl;
+using System.Security.Principal;
 public class BancoService
 {
     private List<ContaBancaria> contas = new();
     private readonly string arquivo =
-        Path.Combine(AppContext.BaseDirectory, "contas.txt");//path do txt
+     Path.Combine(Directory.GetCurrentDirectory(), "dados", "contas.txt");
+
+
 
     public BancoService()
     {
+
+        string pasta = Path.Combine(Directory.GetCurrentDirectory(), "dados");
+
+        if (!Directory.Exists(pasta))
+            Directory.CreateDirectory(pasta);
+
         if (!File.Exists(arquivo))
             File.Create(arquivo).Close();
 
         Carregar();
+    }
+    private static readonly string chave = "12345678901234567890123456789012"; // 32 caracteres
+    private static readonly string iv = "1234567890123456"; // 16 caracteres
+    public static string Criptografar(string texto)
+    {
+        using Aes aes = Aes.Create();
+
+        aes.Key = Encoding.UTF8.GetBytes(chave);
+        aes.IV = Encoding.UTF8.GetBytes(iv);
+
+        ICryptoTransform encryptor = aes.CreateEncryptor();
+
+        byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+        byte[] criptografado = encryptor.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+
+        return Convert.ToBase64String(criptografado);
+    }
+
+    public static string Descriptografar(string textoCriptografado)
+    {
+        using Aes aes = Aes.Create();
+
+        aes.Key = Encoding.UTF8.GetBytes(chave);
+        aes.IV = Encoding.UTF8.GetBytes(iv);
+
+        ICryptoTransform decryptor = aes.CreateDecryptor();
+
+        byte[] bytes = Convert.FromBase64String(textoCriptografado);
+
+        byte[] descriptografado = decryptor.TransformFinalBlock(bytes, 0, bytes.Length);
+
+        return Encoding.UTF8.GetString(descriptografado);
     }
 
     public void CriarConta()//Criação de conta
@@ -83,22 +127,26 @@ public class BancoService
         return conta;
     }
 
-    public void Salvar()//salvar as informações
+    public void Salvar()
     {
         if (contas.Count == 0)
             return;
 
-        File.WriteAllLines(arquivo,
-            contas.Select(c =>
+        var linhas = contas.Select(c =>
+        {
+            if (c is ContaEmpresarial ce)
             {
-                if (c is ContaEmpresarial ce)
-                {
-                    return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name};{ce.ExportarDados()}";
-                }
+                return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name};{ce.ExportarDados()}";
+            }
 
-                return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}";
-            })
-        );
+            return $"{c.NumeroConta};{c.Titular};{c.CPF};{c.Senha};{c.Saldo};{c.GetType().Name}";
+        });
+
+        string texto = string.Join("\n", linhas);
+
+        string criptografado = Criptografar(texto);
+
+        File.WriteAllText(arquivo, criptografado);
     }
 
     private void Carregar()
@@ -110,7 +158,14 @@ public class BancoService
 
         try
         {
-            foreach (var linha in File.ReadAllLines(arquivo))
+            string textoCriptografado = File.ReadAllText(arquivo);
+
+            if (string.IsNullOrWhiteSpace(textoCriptografado))
+                return;
+
+            string texto = Descriptografar(textoCriptografado);
+
+            foreach (var linha in texto.Split('\n'))
             {
                 if (string.IsNullOrWhiteSpace(linha))
                     continue;
@@ -141,9 +196,8 @@ public class BancoService
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Erro ao carregar contas.txt:");
+            Console.WriteLine("Erro ao carregar contas:");
             Console.WriteLine(ex.Message);
-            Console.WriteLine("Arquivo pode estar corrompido ou não foi encontrado.");
         }
     }
     public void ListarContas()//lista as contas existentes no admin
@@ -355,5 +409,7 @@ public class BancoService
 
         return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
     }
+
+
 
 }

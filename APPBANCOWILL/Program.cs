@@ -27,7 +27,7 @@ public class Program
             Thread.Sleep(500);
             ExibirLogo();//exibe o logo do banco
             string nomeUsuario = Environment.UserName;//pega o nome do pc para usar na saudação
-            Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;196m{nomeUsuario}\x1b[38;5;231m");//saudação que puxa o nome do pc
+            Console.WriteLine($"\nBem-vindo ao sistema bancário \x1b[38;5;196m{nomeUsuario}\x1b[0m");//saudação que puxa o nome do pc
             Console.Write("\nDigite ");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.Write("1");
