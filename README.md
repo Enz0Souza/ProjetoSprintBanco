@@ -77,27 +77,6 @@ O sistema possui um modo administrativo que permite:
 
 ---
 
-# 🗂️ Estrutura do Projeto
-
-O projeto foi estruturado de forma organizada para facilitar manutenção e expansão:
-
-```
-📦 Sistema-Bancario
- ┣ 📂 dados
- ┃ ┗ contas.txt
- ┣ 📂 services
- ┃ ┗ BancoService.cs
- ┣ 📂 models
- ┃ ┣ ContaBancaria.cs
- ┃ ┣ ContaCorrente.cs
- ┃ ┣ ContaPoupanca.cs
- ┃ ┗ ContaEmpresarial.cs
- ┣ Program.cs
- ┗ README.md
-```
-
----
-
 # 💾 Armazenamento de Dados
 
 Os dados das contas são armazenados em **arquivos locais**, permitindo persistência das informações mesmo após o encerramento do programa.
@@ -145,7 +124,7 @@ Além disso, o projeto incentiva boas práticas como:
 
 # 👨‍💻 Autor
 
-Projeto desenvolvido por **Hyper Zim**
+Projeto desenvolvido por Enzo Souza
 Aluno do **SENAI CIMATEC**
 
 ---
