@@ -78,8 +78,6 @@ public class BancoService
 
         if (string.IsNullOrWhiteSpace(cpf))
             throw new Exception("CPF não pode ser vazio");
-        if (cpf.Contains(" "))
-            throw new Exception("CPF não pode conter espaços");
         if (cpf.Any(c => !char.IsDigit(c)))
             throw new Exception("CPF deve conter apenas dígitos numéricos");
 
@@ -90,8 +88,6 @@ public class BancoService
         string senha = Console.ReadLine()!;
         if (string.IsNullOrWhiteSpace(senha))
             throw new Exception("Senha não pode ser vazio");
-        if(senha.Contains(" "))
-            throw new Exception("Senha não pode conter espaços");
         if (senha.Any(c => !char.IsDigit(c)))
             throw new Exception("Senha deve conter apenas dígitos numéricos");
 
@@ -331,6 +327,7 @@ public class BancoService
         Console.WriteLine("Escolha a forma de pagamento:");
         Console.WriteLine("1 - Transferência");
         Console.WriteLine("2 - Pix");
+        Console.WriteLine("3 - Sair");
 
         if (!int.TryParse(Console.ReadLine(), out int pagamento))
         {
@@ -395,6 +392,11 @@ public class BancoService
                     FileName = caminhoImagem,
                     UseShellExecute = true
                 });
+                break;
+
+            case 3:
+                Console.WriteLine("Saindo do pagamento...");
+                Thread.Sleep(1000);
                 break;
 
             default:
